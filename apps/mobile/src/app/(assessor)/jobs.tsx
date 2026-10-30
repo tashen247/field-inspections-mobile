@@ -127,16 +127,8 @@ export default function Jobs() {
           style={{ flex: 1 }}
           showsUserLocation
           showsMyLocationButton
-          initialRegion={
-            visible[0]
-              ? {
-                  latitude: visible[0].data.location.lat,
-                  longitude: visible[0].data.location.lng,
-                  latitudeDelta: 0.15,
-                  longitudeDelta: 0.15,
-                }
-              : { latitude: -29.0, longitude: 25.0, latitudeDelta: 12, longitudeDelta: 12 }
-          }
+          key={visible.map((r) => r.id).join(',')}
+          initialRegion={regionFor(visible.map((r) => r.data.location))}
         >
           {visible.map((r) => (
             <Marker
@@ -216,6 +208,23 @@ export default function Jobs() {
       )}
     </View>
   );
+}
+
+/** A map region that fits every job, with a margin so pins are not on the edge. */
+export function regionFor(points: { lat: number; lng: number }[]) {
+  if (points.length === 0) {
+    return { latitude: -29.0, longitude: 25.0, latitudeDelta: 12, longitudeDelta: 12 };
+  }
+  const lats = points.map((p) => p.lat);
+  const lngs = points.map((p) => p.lng);
+  const [minLat, maxLat] = [Math.min(...lats), Math.max(...lats)];
+  const [minLng, maxLng] = [Math.min(...lngs), Math.max(...lngs)];
+  return {
+    latitude: (minLat + maxLat) / 2,
+    longitude: (minLng + maxLng) / 2,
+    latitudeDelta: Math.max(0.02, (maxLat - minLat) * 1.5),
+    longitudeDelta: Math.max(0.02, (maxLng - minLng) * 1.5),
+  };
 }
 
 const styles = StyleSheet.create({
