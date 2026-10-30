@@ -1,6 +1,7 @@
 import js from '@eslint/js';
 import prettier from 'eslint-config-prettier';
 import globals from 'globals';
+import reactHooks from 'eslint-plugin-react-hooks';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
@@ -42,6 +43,16 @@ export default tseslint.config(
       '**/__tests__/**',
     ],
     rules: { 'no-console': 'off' },
+  },
+  {
+    files: ['apps/mobile/src/**/*.{ts,tsx}'],
+    plugins: { 'react-hooks': reactHooks },
+    rules: { ...reactHooks.configs.recommended.rules },
+  },
+  {
+    files: ['apps/mobile/jest.setup.js'],
+    languageOptions: { globals: { ...globals.jest } },
+    rules: { '@typescript-eslint/no-require-imports': 'off' },
   },
   {
     files: ['**/*.cjs', 'apps/mobile/*.js'],

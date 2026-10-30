@@ -1,0 +1,79 @@
+{
+  "expo": {
+    "name": "Field Inspections",
+    "slug": "field-inspections",
+    "scheme": "fieldinspections",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "za.co.tashtech.fieldinspections",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Take inspection photos.",
+        "NSLocationWhenInUseUsageDescription": "Record where each inspection and photo was taken.",
+        "NSFaceIDUsageDescription": "Unlock the app quickly with Face ID.",
+        "UIBackgroundModes": ["fetch", "processing"]
+      }
+    },
+    "android": {
+      "package": "za.co.tashtech.fieldinspections",
+      "adaptiveIcon": {
+        "backgroundColor": "#0E3B43",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "permissions": [
+        "CAMERA",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "USE_BIOMETRIC",
+        "POST_NOTIFICATIONS"
+      ],
+      "predictiveBackGestureEnabled": false
+    },
+    "plugins": [
+      "expo-router",
+      "expo-sqlite",
+      "expo-secure-store",
+      "expo-background-task",
+      "expo-image",
+      "expo-sharing",
+      "expo-web-browser",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Take inspection photos.",
+          "recordAudioAndroid": false
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Record where each inspection and photo was taken."
+        }
+      ],
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Unlock the app quickly with Face ID."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "color": "#0E7C86"
+        }
+      ],
+      "expo-splash-screen"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {}
+    }
+  }
+}
