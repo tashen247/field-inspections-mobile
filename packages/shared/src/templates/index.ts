@@ -1,0 +1,337 @@
+import type { TemplateBody } from '../template.js';
+import { templateBodySchema } from '../template.js';
+
+/** Standard motor claim inspection, as used for seed data and demos. */
+export const VEHICLE_TEMPLATE: TemplateBody = templateBodySchema.parse({
+  diagram: 'vehicle-top',
+  requireSignature: true,
+  sections: [
+    {
+      key: 'identification',
+      title: 'Identification',
+      description: 'Confirm the vehicle matches the claim.',
+      items: [
+        {
+          key: 'vin_matches',
+          kind: 'passFail',
+          label: 'VIN matches claim documents',
+          required: true,
+          allowNa: false,
+          noteOnFail: true,
+          shots: [
+            {
+              key: 'vin_plate',
+              label: 'VIN plate',
+              required: true,
+              hint: 'Usually on the windscreen or B-pillar',
+            },
+          ],
+        },
+        {
+          key: 'odometer',
+          kind: 'number',
+          label: 'Odometer reading',
+          unit: 'km',
+          min: 0,
+          max: 2_000_000,
+          integer: true,
+          required: true,
+          shots: [{ key: 'odometer', label: 'Odometer display', required: true }],
+        },
+        {
+          key: 'licence_disc_valid',
+          kind: 'passFail',
+          label: 'Licence disc valid',
+          required: true,
+          shots: [{ key: 'licence_disc', label: 'Licence disc', required: false }],
+        },
+      ],
+    },
+    {
+      key: 'exterior',
+      title: 'Exterior',
+      items: [
+        {
+          key: 'exterior_overview',
+          kind: 'passFail',
+          label: 'Bodywork free of undeclared damage',
+          required: true,
+          noteOnFail: true,
+          shots: [
+            { key: 'front_left', label: 'Front-left', required: true },
+            { key: 'front_right', label: 'Front-right', required: true },
+            { key: 'rear_left', label: 'Rear-left', required: true },
+            { key: 'rear_right', label: 'Rear-right', required: true },
+          ],
+        },
+        {
+          key: 'windscreen',
+          kind: 'select',
+          label: 'Windscreen condition',
+          required: true,
+          options: [
+            { value: 'intact', label: 'Intact' },
+            { value: 'chipped', label: 'Chipped' },
+            { value: 'cracked', label: 'Cracked' },
+            { value: 'shattered', label: 'Shattered' },
+          ],
+        },
+        {
+          key: 'lights',
+          kind: 'passFail',
+          label: 'Head and tail lights working',
+          required: true,
+        },
+      ],
+    },
+    {
+      key: 'tyres',
+      title: 'Tyres',
+      items: [
+        {
+          key: 'tread_fl',
+          kind: 'number',
+          label: 'Tread depth front-left',
+          unit: 'mm',
+          min: 0,
+          max: 20,
+          required: true,
+        },
+        {
+          key: 'tread_fr',
+          kind: 'number',
+          label: 'Tread depth front-right',
+          unit: 'mm',
+          min: 0,
+          max: 20,
+          required: true,
+        },
+        {
+          key: 'tread_rl',
+          kind: 'number',
+          label: 'Tread depth rear-left',
+          unit: 'mm',
+          min: 0,
+          max: 20,
+          required: true,
+        },
+        {
+          key: 'tread_rr',
+          kind: 'number',
+          label: 'Tread depth rear-right',
+          unit: 'mm',
+          min: 0,
+          max: 20,
+          required: true,
+        },
+        { key: 'spare_present', kind: 'passFail', label: 'Spare wheel present', required: false },
+      ],
+    },
+    {
+      key: 'interior',
+      title: 'Interior and mechanical',
+      items: [
+        {
+          key: 'airbags',
+          kind: 'select',
+          label: 'Airbags',
+          required: true,
+          options: [
+            { value: 'intact', label: 'Intact' },
+            { value: 'deployed', label: 'Deployed' },
+            { value: 'warning_light', label: 'Warning light on' },
+          ],
+        },
+        { key: 'engine_starts', kind: 'passFail', label: 'Engine starts', required: true },
+        {
+          key: 'interior_notes',
+          kind: 'text',
+          label: 'Interior notes',
+          multiline: true,
+          minPhotos: 0,
+        },
+      ],
+    },
+    {
+      key: 'assessment',
+      title: 'Assessment',
+      items: [
+        {
+          key: 'repairable',
+          kind: 'select',
+          label: 'Outcome',
+          required: true,
+          options: [
+            { value: 'repair', label: 'Repairable' },
+            { value: 'write_off', label: 'Write-off' },
+            { value: 'further_inspection', label: 'Needs further inspection' },
+          ],
+        },
+        {
+          key: 'estimate_zar',
+          kind: 'number',
+          label: 'Estimated repair cost',
+          unit: 'ZAR',
+          min: 0,
+          max: 5_000_000,
+          integer: true,
+          required: false,
+        },
+        {
+          key: 'assessor_summary',
+          kind: 'text',
+          label: 'Summary',
+          multiline: true,
+          required: true,
+        },
+      ],
+    },
+  ],
+});
+
+/** Residential or commercial property inspection for underwriting and claims. */
+export const PROPERTY_TEMPLATE: TemplateBody = templateBodySchema.parse({
+  diagram: 'floor-plan',
+  requireSignature: true,
+  sections: [
+    {
+      key: 'site',
+      title: 'Site and access',
+      items: [
+        {
+          key: 'address_confirmed',
+          kind: 'passFail',
+          label: 'Street address confirmed on site',
+          required: true,
+          allowNa: false,
+          shots: [{ key: 'street_view', label: 'Street view with house number', required: true }],
+        },
+        {
+          key: 'security',
+          kind: 'select',
+          label: 'Perimeter security',
+          required: true,
+          options: [
+            { value: 'none', label: 'None' },
+            { value: 'wall', label: 'Wall or fence' },
+            { value: 'electric', label: 'Electric fence' },
+            { value: 'estate', label: 'Security estate' },
+          ],
+        },
+        {
+          key: 'armed_response',
+          kind: 'passFail',
+          label: 'Armed response contract active',
+          required: false,
+        },
+      ],
+    },
+    {
+      key: 'structure',
+      title: 'Structure',
+      items: [
+        {
+          key: 'roof',
+          kind: 'passFail',
+          label: 'Roof free of leaks and damage',
+          required: true,
+          noteOnFail: true,
+          shots: [{ key: 'roof', label: 'Roof', required: true }],
+        },
+        {
+          key: 'roof_type',
+          kind: 'select',
+          label: 'Roof covering',
+          required: true,
+          options: [
+            { value: 'tile', label: 'Tile' },
+            { value: 'ibr', label: 'IBR sheeting' },
+            { value: 'thatch', label: 'Thatch' },
+            { value: 'slate', label: 'Slate' },
+          ],
+        },
+        {
+          key: 'walls',
+          kind: 'passFail',
+          label: 'External walls free of cracks',
+          required: true,
+          noteOnFail: true,
+          minPhotos: 0,
+        },
+        { key: 'damp', kind: 'passFail', label: 'No signs of rising damp', required: true },
+        {
+          key: 'floor_area',
+          kind: 'number',
+          label: 'Floor area',
+          unit: 'm²',
+          min: 10,
+          max: 100_000,
+          required: true,
+        },
+      ],
+    },
+    {
+      key: 'services',
+      title: 'Services',
+      items: [
+        {
+          key: 'electrical_coc',
+          kind: 'passFail',
+          label: 'Electrical COC available',
+          required: true,
+        },
+        {
+          key: 'geyser_drip_tray',
+          kind: 'passFail',
+          label: 'Geyser has drip tray',
+          required: true,
+          shots: [{ key: 'geyser', label: 'Geyser', required: false }],
+        },
+        {
+          key: 'solar',
+          kind: 'select',
+          label: 'Backup power',
+          required: false,
+          options: [
+            { value: 'none', label: 'None' },
+            { value: 'inverter', label: 'Inverter and batteries' },
+            { value: 'solar', label: 'Solar PV' },
+            { value: 'generator', label: 'Generator' },
+          ],
+        },
+      ],
+    },
+    {
+      key: 'assessment',
+      title: 'Assessment',
+      items: [
+        {
+          key: 'risk_rating',
+          kind: 'select',
+          label: 'Risk rating',
+          required: true,
+          options: [
+            { value: 'low', label: 'Low' },
+            { value: 'medium', label: 'Medium' },
+            { value: 'high', label: 'High' },
+          ],
+        },
+        {
+          key: 'estimate_zar',
+          kind: 'number',
+          label: 'Estimated damage',
+          unit: 'ZAR',
+          min: 0,
+          integer: true,
+        },
+        {
+          key: 'assessor_summary',
+          kind: 'text',
+          label: 'Summary',
+          multiline: true,
+          required: true,
+        },
+      ],
+    },
+  ],
+});

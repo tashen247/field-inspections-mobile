@@ -1,0 +1,11 @@
+node_modules
+dist
+coverage
+cdk.out
+pnpm-lock.yaml
+apps/mobile/.expo
+apps/mobile/ios
+apps/mobile/android
+apps/api/drizzle/meta
+apps/mobile/drizzle
+docs/sample-report.pdf

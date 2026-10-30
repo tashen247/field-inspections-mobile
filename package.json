@@ -1,0 +1,33 @@
+{
+  "name": "field-inspections-mobile",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Offline-first field inspection app for vehicle and property assessors, with a Fastify API, PDF worker and AWS CDK infrastructure.",
+  "license": "MIT",
+  "packageManager": "pnpm@10.18.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "pnpm -r --filter=./packages/* --filter=./apps/api --filter=./apps/worker run build",
+    "dev": "pnpm --filter @fim/shared build && pnpm -r --parallel --filter @fim/api --filter @fim/worker --filter @fim/mobile run dev",
+    "dev:backend": "pnpm --filter @fim/shared build && pnpm -r --parallel --filter @fim/api --filter @fim/worker run dev",
+    "lint": "eslint . && prettier --check .",
+    "format": "prettier --write .",
+    "typecheck": "pnpm --filter @fim/shared build && pnpm -r run typecheck",
+    "test": "pnpm --filter @fim/shared build && pnpm -r run test",
+    "test:coverage": "pnpm --filter @fim/shared build && pnpm -r run test:coverage",
+    "db:migrate": "pnpm --filter @fim/api run db:migrate",
+    "db:seed": "pnpm --filter @fim/api run db:seed",
+    "synth": "pnpm --filter @fim/infra run synth"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.0",
+    "eslint": "^9.39.0",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^16.4.0",
+    "prettier": "^3.6.2",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.46.0"
+  }
+}

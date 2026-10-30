@@ -1,0 +1,37 @@
+name: field-inspections
+
+services:
+  postgres:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_USER: fim
+      POSTGRES_PASSWORD: fim
+      POSTGRES_DB: fim
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./scripts/postgres-init.sql:/docker-entrypoint-initdb.d/10-init.sql:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U fim -d fim']
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  localstack:
+    image: localstack/localstack:4.9
+    environment:
+      SERVICES: s3,sqs
+      AWS_DEFAULT_REGION: af-south-1
+    ports:
+      - '4566:4566'
+    volumes:
+      - ./scripts/localstack/init-aws.sh:/etc/localstack/init/ready.d/init-aws.sh:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'awslocal sqs get-queue-url --queue-name fim-jobs >/dev/null 2>&1']
+      interval: 3s
+      timeout: 5s
+      retries: 40
+
+volumes:
+  pgdata:
