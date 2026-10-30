@@ -1,6 +1,6 @@
 import { and, eq, sql } from 'drizzle-orm';
-import type { Db, Tx } from '../db/client.js';
-import { idempotencyKeys } from '../db/schema.js';
+import type { Db, Tx } from '@fim/db';
+import { idempotencyKeys } from '@fim/db';
 import { AppError } from '../lib/errors.js';
 import { sha256, stableStringify } from '../lib/hash.js';
 

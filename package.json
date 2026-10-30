@@ -9,17 +9,18 @@
     "node": ">=20"
   },
   "scripts": {
-    "build": "pnpm -r --filter=./packages/* --filter=./apps/api --filter=./apps/worker run build",
-    "dev": "pnpm --filter @fim/shared build && pnpm -r --parallel --filter @fim/api --filter @fim/worker --filter @fim/mobile run dev",
-    "dev:backend": "pnpm --filter @fim/shared build && pnpm -r --parallel --filter @fim/api --filter @fim/worker run dev",
+    "build": "pnpm build:libs && pnpm -r --filter @fim/api --filter @fim/worker run build",
+    "dev": "pnpm build:libs && pnpm -r --parallel --filter @fim/api --filter @fim/worker --filter @fim/mobile run dev",
+    "dev:backend": "pnpm build:libs && pnpm -r --parallel --filter @fim/api --filter @fim/worker run dev",
     "lint": "eslint . && prettier --check .",
     "format": "prettier --write .",
-    "typecheck": "pnpm --filter @fim/shared build && pnpm -r run typecheck",
-    "test": "pnpm --filter @fim/shared build && pnpm -r run test",
-    "test:coverage": "pnpm --filter @fim/shared build && pnpm -r run test:coverage",
+    "typecheck": "pnpm build:libs && pnpm -r run typecheck",
+    "test": "pnpm build:libs && pnpm -r run test",
+    "test:coverage": "pnpm build:libs && pnpm -r run test:coverage",
     "db:migrate": "pnpm --filter @fim/api run db:migrate",
     "db:seed": "pnpm --filter @fim/api run db:seed",
-    "synth": "pnpm --filter @fim/infra run synth"
+    "synth": "pnpm --filter @fim/infra run synth",
+    "build:libs": "pnpm -r --filter ./packages/** run build"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.0",

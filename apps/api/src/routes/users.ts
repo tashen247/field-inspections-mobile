@@ -2,7 +2,7 @@ import { roleSchema, userListResponseSchema } from '@fim/shared';
 import { asc, eq } from 'drizzle-orm';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
-import { users } from '../db/schema.js';
+import { users } from '@fim/db';
 
 export const userRoutes: FastifyPluginAsyncZod = async (app) => {
   app.get(

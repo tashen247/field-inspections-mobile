@@ -162,3 +162,18 @@ describe('role checks', () => {
     expect(missing.statusCode).toBe(404);
   });
 });
+
+describe('reference images', () => {
+  it('lists and serves cacheable SVG examples for guided shots', async () => {
+    const list = await ctx.app.inject({ method: 'GET', url: '/v1/reference-images' });
+    expect(list.json().items).toContain('vin_plate');
+    for (const name of list.json().items as string[]) {
+      const res = await ctx.app.inject({ method: 'GET', url: `/v1/reference-images/${name}.svg` });
+      expect(res.statusCode).toBe(200);
+      expect(res.headers['content-type']).toContain('image/svg+xml');
+      expect(res.body.startsWith('<svg')).toBe(true);
+    }
+    const missing = await ctx.app.inject({ method: 'GET', url: '/v1/reference-images/nope.svg' });
+    expect(missing.statusCode).toBe(404);
+  });
+});

@@ -19,7 +19,7 @@ import {
 import { eq } from 'drizzle-orm';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
-import { reports } from '../db/schema.js';
+import { reports } from '@fim/db';
 import { AppError } from '../lib/errors.js';
 import { loadInspectionDetail } from '../services/detail.js';
 import { withIdempotency } from '../services/idempotency.js';

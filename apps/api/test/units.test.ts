@@ -7,8 +7,8 @@ import {
 import pino from 'pino';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { loadConfig, resolveDatabaseUrl } from '../src/config.js';
-import { createDatabase, type Database } from '../src/db/client.js';
-import { jobOutbox } from '../src/db/schema.js';
+import { createDatabase, type Database } from '@fim/db';
+import { jobOutbox } from '@fim/db';
 import { sha256, stableStringify } from '../src/lib/hash.js';
 import { hashPassword, verifyPassword } from '../src/lib/password.js';
 import { addToOutbox, createOutboxRelay } from '../src/services/outbox.js';

@@ -1,7 +1,7 @@
 import { buildApp } from './app.js';
 import { loadConfig } from './config.js';
-import { createDatabase } from './db/client.js';
-import { runMigrations } from './db/migrate.js';
+import { createDatabase } from '@fim/db';
+import { runMigrations } from '@fim/db';
 import { createLogger } from './logger.js';
 import { createOutboxRelay } from './services/outbox.js';
 import { createSqsQueue } from './services/queue.js';

@@ -52,6 +52,8 @@ export interface SyncDeps {
   now?: () => Date;
   /** Called after each op so the UI can show progress. */
   onProgress?: () => void;
+  /** Caches example images referenced by templates so guided shots work offline. */
+  cacheReferenceImages?: (names: string[]) => Promise<void>;
 }
 
 const LAST_SYNC_KEY = 'lastSyncServerTime';
@@ -117,7 +119,15 @@ export class SyncEngine {
     // Templates are versioned and small; refresh them at most hourly.
     const lastTemplates = getMeta(db, TEMPLATES_KEY);
     if (!lastTemplates || this.now().getTime() - Date.parse(lastTemplates) > 3_600_000) {
-      upsertTemplates(db, (await api.templates()).items);
+      const { items } = await api.templates();
+      upsertTemplates(db, items);
+      const names = new Set(
+        items.flatMap((t) =>
+          t.schema.sections.flatMap((s) => s.items.flatMap((i) => i.shots.map((sh) => sh.reference))),
+        ),
+      );
+      names.delete(undefined);
+      await this.deps.cacheReferenceImages?.([...names] as string[]).catch(() => undefined);
       setMeta(db, TEMPLATES_KEY, this.now().toISOString());
     }
     if (serverTime) setMeta(db, LAST_SYNC_KEY, serverTime);

@@ -7,8 +7,8 @@ import {
   type Subject,
 } from '@fim/shared';
 import { sql } from 'drizzle-orm';
-import type { Db } from './client.js';
-import { inspections, templates, users } from './schema.js';
+import type { Db } from '@fim/db';
+import { inspections, templates, users } from '@fim/db';
 import { hashPassword } from '../lib/password.js';
 
 export const DEMO_PASSWORD = 'Inspect!2026';

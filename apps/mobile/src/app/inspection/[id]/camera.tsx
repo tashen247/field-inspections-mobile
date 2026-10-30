@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { CameraView, useCameraPermissions } from 'expo-camera';
+import { Image } from 'expo-image';
 import * as Haptics from 'expo-haptics';
 import * as Location from 'expo-location';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -11,6 +12,7 @@ import { Button, Text } from '../../../components/ui';
 import { addPhoto, getJob, getTemplate, listPhotos } from '../../../db/repo';
 import { processPhoto } from '../../../features/camera/process';
 import { shotPlan } from '../../../features/camera/shots';
+import { referenceImageFile } from '../../../lib/reference-images';
 import { useDbQuery } from '../../../lib/use-db';
 import { uuid } from '../../../lib/uuid';
 import { getServices } from '../../../services';
@@ -37,6 +39,13 @@ export default function GuidedCamera() {
     },
     [id, itemKey, shotKey],
   );
+
+  const referenceUri = (() => {
+    const name = plan?.current?.reference;
+    if (!name) return null;
+    const f = referenceImageFile(name);
+    return f.exists ? f.uri : null;
+  })();
 
   if (!permission) return <View style={styles.black} />;
   if (!permission.granted) {
@@ -135,6 +144,11 @@ export default function GuidedCamera() {
           </Animated.View>
           <View style={{ width: 30 }} />
         </View>
+        {referenceUri ? (
+          <View style={styles.reference} accessibilityLabel={`Example framing for ${plan.label}`}>
+            <Image source={{ uri: referenceUri }} style={{ flex: 1 }} contentFit="contain" />
+          </View>
+        ) : null}
         {plan.hint ? (
           <Text color="#fff" style={styles.hint}>
             {plan.hint}
@@ -203,6 +217,15 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255,255,255,0.7)',
     borderRadius: 16,
     borderStyle: 'dashed',
+  },
+  reference: {
+    alignSelf: 'flex-end',
+    width: 120,
+    height: 80,
+    marginTop: 10,
+    borderRadius: 8,
+    overflow: 'hidden',
+    backgroundColor: 'rgba(255,255,255,0.9)',
   },
   flash: { ...StyleSheet.absoluteFill, backgroundColor: 'rgba(255,255,255,0.6)' },
   bottomBar: {

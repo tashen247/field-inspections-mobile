@@ -20,13 +20,14 @@ import {
 } from 'fastify-type-provider-zod';
 import type { Logger } from 'pino';
 import type { Config } from './config.js';
-import type { Db } from './db/client.js';
+import type { Db } from '@fim/db';
 import { AppError } from './lib/errors.js';
 import { authPlugin } from './plugins/auth.js';
 import { authRoutes } from './routes/auth.js';
 import { deviceRoutes } from './routes/devices.js';
 import { healthRoutes } from './routes/health.js';
 import { inspectionRoutes } from './routes/inspections.js';
+import { referenceImageRoutes } from './routes/reference-images.js';
 import { templateRoutes } from './routes/templates.js';
 import { uploadRoutes } from './routes/uploads.js';
 import { userRoutes } from './routes/users.js';
@@ -150,6 +151,7 @@ export async function buildApp(deps: AppDeps): Promise<FastifyInstance> {
     async (v1) => {
       await v1.register(authRoutes, { prefix: '/auth' });
       await v1.register(templateRoutes, { prefix: '/templates' });
+      await v1.register(referenceImageRoutes, { prefix: '/reference-images' });
       await v1.register(inspectionRoutes, { prefix: '/inspections' });
       await v1.register(uploadRoutes, { prefix: '/inspections' });
       await v1.register(userRoutes, { prefix: '/users' });

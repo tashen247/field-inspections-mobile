@@ -2,7 +2,7 @@ import { randomBytes, randomUUID } from 'node:crypto';
 import type { User } from '@fim/shared';
 import { and, eq, isNull } from 'drizzle-orm';
 import type { FastifyInstance } from 'fastify';
-import { refreshTokens, users } from '../db/schema.js';
+import { refreshTokens, users } from '@fim/db';
 import { AppError } from '../lib/errors.js';
 import { sha256 } from '../lib/hash.js';
 

@@ -13,6 +13,8 @@ export const guidedShotSchema = z.object({
   label: z.string().min(1),
   hint: z.string().optional(),
   required: z.boolean().default(false),
+  /** Name of an example image served at /v1/reference-images/<name>.svg and cached offline. */
+  reference: z.string().optional(),
 });
 export type GuidedShot = z.infer<typeof guidedShotSchema>;
 

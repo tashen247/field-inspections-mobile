@@ -12,7 +12,7 @@ import {
 import type { FastifyInstance } from 'fastify';
 import pino from 'pino';
 import { buildApp } from '../src/app.js';
-import { createDatabase, type Database } from '../src/db/client.js';
+import { createDatabase, type Database } from '@fim/db';
 import {
   DEMO_PASSWORD,
   DEMO_USERS,

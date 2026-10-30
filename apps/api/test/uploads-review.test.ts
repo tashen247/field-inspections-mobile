@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 import type { Inspection, StartUploadResponse } from '@fim/shared';
 import { s3Keys } from '@fim/shared';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { reports } from '../src/db/schema.js';
+import { reports } from '@fim/db';
 import {
   ASSESSOR_JHB,
   MANAGER,
@@ -54,7 +54,7 @@ async function startUpload(
 }
 
 async function putPart(url: string, data: Buffer): Promise<string> {
-  const res = await fetch(url, { method: 'PUT', body: data });
+  const res = await fetch(url, { method: 'PUT', body: new Uint8Array(data) });
   expect(res.status).toBe(200);
   const etag = res.headers.get('etag');
   if (!etag) throw new Error('no etag');

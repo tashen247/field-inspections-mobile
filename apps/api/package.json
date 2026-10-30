@@ -12,10 +12,11 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "tsx --env-file-if-exists=../../.env src/db/migrate.ts",
+    "db:generate": "pnpm --filter @fim/db generate",
+    "db:migrate": "tsx --env-file-if-exists=../../.env scripts/migrate.ts",
     "db:seed": "tsx --env-file-if-exists=../../.env src/db/seed.ts",
-    "bench:sync": "tsx --env-file-if-exists=../../.env scripts/bench-sync.ts"
+    "bench:sync": "tsx --env-file-if-exists=../../.env scripts/bench-sync.ts",
+    "demo:flow": "tsx --env-file-if-exists=../../.env scripts/demo-flow.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1160.0",
@@ -34,13 +35,13 @@
     "fastify-type-provider-zod": "^7.0.0",
     "pg": "^8.23.1",
     "pino": "^10.4.0",
-    "zod": "^4.1.12"
+    "zod": "^4.1.12",
+    "@fim/db": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.18.0",
     "@types/pg": "^8.15.5",
     "@vitest/coverage-v8": "^3.2.4",
-    "drizzle-kit": "^0.31.11",
     "pino-pretty": "^13.2.0",
     "tsx": "^4.23.15",
     "typescript": "~6.0.3",

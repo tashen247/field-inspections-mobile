@@ -1,7 +1,7 @@
 import { templateListResponseSchema } from '@fim/shared';
 import { asc } from 'drizzle-orm';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
-import { templates } from '../db/schema.js';
+import { templates } from '@fim/db';
 
 export const templateRoutes: FastifyPluginAsyncZod = async (app) => {
   app.get(

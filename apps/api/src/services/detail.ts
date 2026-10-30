@@ -1,6 +1,6 @@
 import type { InspectionDetail } from '@fim/shared';
 import { asc, eq } from 'drizzle-orm';
-import type { DbOrTx } from '../db/client.js';
+import type { DbOrTx } from '@fim/db';
 import {
   damagePins,
   gpsPoints,
@@ -10,7 +10,7 @@ import {
   reviewEvents,
   signatures,
   users,
-} from '../db/schema.js';
+} from '@fim/db';
 import type { Storage } from './storage.js';
 import { getInspectionDto } from './inspections.js';
 

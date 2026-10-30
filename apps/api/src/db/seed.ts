@@ -1,7 +1,7 @@
 import { parseArgs } from 'node:util';
 import { resolveDatabaseUrl } from '../config.js';
-import { createDatabase } from './client.js';
-import { runMigrations } from './migrate.js';
+import { createDatabase } from '@fim/db';
+import { runMigrations } from '@fim/db';
 import { DEMO_PASSWORD, DEMO_USERS, resetDatabase, seedInspections } from './seed-data.js';
 
 const { values } = parseArgs({

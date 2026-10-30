@@ -6,7 +6,7 @@ import {
   type SubmissionResponse,
 } from '@fim/shared';
 import { and, eq, inArray, isNull, notInArray, sql } from 'drizzle-orm';
-import type { DbOrTx } from '../db/client.js';
+import type { DbOrTx } from '@fim/db';
 import {
   damagePins,
   gpsPoints,
@@ -15,7 +15,7 @@ import {
   inspections,
   signatures,
   templates,
-} from '../db/schema.js';
+} from '@fim/db';
 import { AppError, conflict } from '../lib/errors.js';
 import type { AccessTokenClaims } from '../plugins/auth.js';
 import {

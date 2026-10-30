@@ -1,8 +1,8 @@
 import type { Job } from '@fim/shared';
 import { asc, eq, inArray, sql } from 'drizzle-orm';
 import type { Logger } from 'pino';
-import type { Db, DbOrTx } from '../db/client.js';
-import { jobOutbox } from '../db/schema.js';
+import type { Db, DbOrTx } from '@fim/db';
+import { jobOutbox } from '@fim/db';
 import type { JobQueue } from './queue.js';
 
 /** Record jobs inside the caller's transaction. */

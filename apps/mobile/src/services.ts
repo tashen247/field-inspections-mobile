@@ -3,6 +3,7 @@ import type { LocalDb } from './db/types';
 import { createApiClient, type ApiClient } from './lib/api';
 import { useAuth } from './lib/auth-store';
 import { apiBaseUrl } from './lib/config';
+import { cacheReferenceImages } from './lib/reference-images';
 import { SyncEngine } from './sync/engine';
 import { useSyncStatus } from './sync/status';
 import { expoFileTransport } from './sync/transport';
@@ -32,6 +33,7 @@ export function getServices(): Services {
     api,
     files: expoFileTransport,
     onProgress: () => useSyncStatus.getState().touch(),
+    cacheReferenceImages: (names) => cacheReferenceImages(apiBaseUrl(), names),
   });
   engine.recover();
   services = { db, api, engine };

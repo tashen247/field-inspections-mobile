@@ -7,7 +7,7 @@ import {
 } from '@fim/shared';
 import { eq } from 'drizzle-orm';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
-import { users } from '../db/schema.js';
+import { users } from '@fim/db';
 import { AppError } from '../lib/errors.js';
 import { hashPassword, verifyPassword } from '../lib/password.js';
 import { issueTokens, rotateRefreshToken } from '../services/tokens.js';

@@ -11,8 +11,8 @@ import {
 import { and, eq } from 'drizzle-orm';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
-import type { DbOrTx } from '../db/client.js';
-import { inspectionPhotos, inspections, signatures } from '../db/schema.js';
+import type { DbOrTx } from '@fim/db';
+import { inspectionPhotos, inspections, signatures } from '@fim/db';
 import { AppError, forbidden, notFound } from '../lib/errors.js';
 import { lockInspection } from '../services/inspections.js';
 import { addToOutbox } from '../services/outbox.js';

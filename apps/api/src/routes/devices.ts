@@ -1,7 +1,7 @@
 import { registerDeviceBodySchema } from '@fim/shared';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
-import { devices } from '../db/schema.js';
+import { devices } from '@fim/db';
 
 export const deviceRoutes: FastifyPluginAsyncZod = async (app) => {
   app.post(

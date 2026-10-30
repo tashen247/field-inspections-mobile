@@ -7,7 +7,7 @@ import {
   inspectionAnswers,
   inspectionPhotos,
   reviewEvents,
-} from '../src/db/schema.js';
+} from '@fim/db';
 import {
   ASSESSOR_JHB,
   ASSESSOR_PE,

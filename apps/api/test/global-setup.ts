@@ -1,6 +1,6 @@
 import { CreateBucketCommand, S3Client } from '@aws-sdk/client-s3';
 import { CreateQueueCommand, SQSClient } from '@aws-sdk/client-sqs';
-import { runMigrations } from '../src/db/migrate.js';
+import { runMigrations } from '@fim/db';
 import { testEnv } from './env.js';
 
 /** Prepares Postgres/PostGIS and LocalStack (also works on bare CI service containers). */

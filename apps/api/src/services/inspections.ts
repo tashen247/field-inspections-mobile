@@ -16,8 +16,8 @@ import {
 } from '@fim/shared';
 import { and, asc, eq, gt, ne, or, sql, type SQL } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/pg-core';
-import type { DbOrTx } from '../db/client.js';
-import { inspections, reviewEvents, templates, users } from '../db/schema.js';
+import type { DbOrTx } from '@fim/db';
+import { inspections, reviewEvents, templates, users } from '@fim/db';
 import { decodeCursor, encodeCursor } from '../lib/cursor.js';
 import { AppError, conflict, forbidden, notFound } from '../lib/errors.js';
 import type { AccessTokenClaims } from '../plugins/auth.js';

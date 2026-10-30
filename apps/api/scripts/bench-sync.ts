@@ -5,8 +5,8 @@
 import { performance } from 'node:perf_hooks';
 import pino from 'pino';
 import { buildApp } from '../src/app.js';
-import { createDatabase } from '../src/db/client.js';
-import { runMigrations } from '../src/db/migrate.js';
+import { createDatabase } from '@fim/db';
+import { runMigrations } from '@fim/db';
 import { DEMO_PASSWORD, DEMO_USERS, resetDatabase, seedInspections } from '../src/db/seed-data.js';
 import { createOutboxRelay } from '../src/services/outbox.js';
 import { createS3Storage } from '../src/services/storage.js';
