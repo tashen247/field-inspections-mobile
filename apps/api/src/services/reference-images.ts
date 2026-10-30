@@ -18,8 +18,16 @@ const frame = (body: string, caption: string) =>
 function carAngle(mirror: boolean, rear: boolean, caption: string) {
   const t = mirror ? `translate(${W},0) scale(-1,1)` : '';
   const nose = rear
-    ? '<path d="M38 96 L38 78 L52 74" stroke="' + HIGHLIGHT + '"/><rect x="40" y="82" width="14" height="6" stroke="' + HIGHLIGHT + '"/>'
-    : '<path d="M38 96 L36 80 L56 72" stroke="' + HIGHLIGHT + '"/><circle cx="46" cy="84" r="5" stroke="' + HIGHLIGHT + '"/>';
+    ? '<path d="M38 96 L38 78 L52 74" stroke="' +
+      HIGHLIGHT +
+      '"/><rect x="40" y="82" width="14" height="6" stroke="' +
+      HIGHLIGHT +
+      '"/>'
+    : '<path d="M38 96 L36 80 L56 72" stroke="' +
+      HIGHLIGHT +
+      '"/><circle cx="46" cy="84" r="5" stroke="' +
+      HIGHLIGHT +
+      '"/>';
   return frame(
     `<g transform="${t}">` +
       '<path d="M36 100 L36 82 Q40 72 60 70 L84 50 Q92 44 110 44 L160 44 Q176 44 186 56 L198 70 Q210 74 210 86 L210 100 Z"/>' +

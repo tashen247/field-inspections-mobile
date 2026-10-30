@@ -36,10 +36,14 @@ const SEVERITY: Record<string, RGB> = {
 /** Standard PDF fonts only cover Windows-1252; replace anything else so drawing never throws. */
 const CP1252_EXTRA = new Set('€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ');
 export function safe(text: string): string {
-  return text
-    .replace(/→/g, '->')
-    .replace(/[  ]/g, ' ')
-    .replace(/[^\u0000-ÿ]/g, (ch) => (CP1252_EXTRA.has(ch) ? ch : '?'));
+  let out = '';
+  for (const ch of text.replace(/\u2192/g, '->')) {
+    const code = ch.codePointAt(0)!;
+    if (code === 0x2009 || code === 0x202f) out += ' ';
+    else if (code <= 0xff || CP1252_EXTRA.has(ch)) out += ch;
+    else out += '?';
+  }
+  return out;
 }
 
 export function wrap(text: string, font: PDFFont, size: number, maxWidth: number): string[] {
@@ -70,8 +74,10 @@ const fmtDate = (d: Date | null) =>
 
 function answerText(item: ChecklistItem, value: AnswerValue | null | undefined): string {
   if (value === null || value === undefined || value === '') return '-';
-  if (item.kind === 'passFail') return value === 'pass' ? 'Pass' : value === 'fail' ? 'Fail' : 'N/A';
-  if (item.kind === 'select') return item.options.find((o) => o.value === value)?.label ?? String(value);
+  if (item.kind === 'passFail')
+    return value === 'pass' ? 'Pass' : value === 'fail' ? 'Fail' : 'N/A';
+  if (item.kind === 'select')
+    return item.options.find((o) => o.value === value)?.label ?? String(value);
   if (item.kind === 'number') {
     if (item.unit === 'ZAR' && typeof value === 'number') return formatZar(value * 100);
     return `${value}${item.unit ? ` ${item.unit}` : ''}`;
@@ -105,7 +111,10 @@ class Layout {
   ensure(height: number) {
     if (this.y - height < M + 24) this.newPage();
   }
-  text(t: string, opts: { x?: number; size?: number; bold?: boolean; color?: RGB; maxWidth?: number } = {}) {
+  text(
+    t: string,
+    opts: { x?: number; size?: number; bold?: boolean; color?: RGB; maxWidth?: number } = {},
+  ) {
     const size = opts.size ?? 10;
     const font = opts.bold ? this.bold : this.font;
     const x = opts.x ?? M;
@@ -121,7 +130,12 @@ class Layout {
     this.y -= 10;
     this.page.drawText(safe(t), { x: M, y: this.y - 14, size: 14, font: this.bold, color: TEAL });
     this.y -= 20;
-    this.page.drawLine({ start: { x: M, y: this.y }, end: { x: A4.w - M, y: this.y }, thickness: 1, color: TEAL });
+    this.page.drawLine({
+      start: { x: M, y: this.y },
+      end: { x: A4.w - M, y: this.y },
+      thickness: 1,
+      color: TEAL,
+    });
     this.y -= 8;
   }
   keyValues(rows: [string, string][], columns = 2) {
@@ -133,9 +147,21 @@ class Layout {
       this.ensure(h);
       chunk.forEach(([k, v], c) => {
         const x = M + c * colW;
-        this.page.drawText(safe(k.toUpperCase()), { x, y: this.y - 8, size: 7, font: this.bold, color: MUTED });
+        this.page.drawText(safe(k.toUpperCase()), {
+          x,
+          y: this.y - 8,
+          size: 7,
+          font: this.bold,
+          color: MUTED,
+        });
         wrap(v, this.font, 10, colW - 12).forEach((line, n) => {
-          this.page.drawText(line, { x, y: this.y - 22 - n * 13, size: 10, font: this.font, color: INK });
+          this.page.drawText(line, {
+            x,
+            y: this.y - 22 - n * 13,
+            size: 10,
+            font: this.font,
+            color: INK,
+          });
         });
       });
       this.y -= h;
@@ -157,7 +183,13 @@ export async function renderReportPdf(data: ReportData, assets: ReportAssets): P
 
   // Header band
   L.page.drawRectangle({ x: 0, y: A4.h - 96, width: A4.w, height: 96, color: TEAL });
-  L.page.drawText('INSPECTION REPORT', { x: M, y: A4.h - 44, size: 20, font: bold, color: rgb(1, 1, 1) });
+  L.page.drawText('INSPECTION REPORT', {
+    x: M,
+    y: A4.h - 44,
+    size: 20,
+    font: bold,
+    color: rgb(1, 1, 1),
+  });
   L.page.drawText(safe(`${data.reference}  ·  ${data.templateName}`), {
     x: M,
     y: A4.h - 66,
@@ -167,8 +199,20 @@ export async function renderReportPdf(data: ReportData, assets: ReportAssets): P
   });
   const status = safe(INSPECTION_STATUS_LABELS[data.status].toUpperCase());
   const sw = bold.widthOfTextAtSize(status, 10) + 18;
-  L.page.drawRectangle({ x: A4.w - M - sw, y: A4.h - 52, width: sw, height: 20, color: rgb(1, 1, 1) });
-  L.page.drawText(status, { x: A4.w - M - sw + 9, y: A4.h - 46, size: 10, font: bold, color: TEAL });
+  L.page.drawRectangle({
+    x: A4.w - M - sw,
+    y: A4.h - 52,
+    width: sw,
+    height: 20,
+    color: rgb(1, 1, 1),
+  });
+  L.page.drawText(status, {
+    x: A4.w - M - sw + 9,
+    y: A4.h - 46,
+    size: 10,
+    font: bold,
+    color: TEAL,
+  });
   L.page.drawText(safe(`Generated ${fmtDate(assets.generatedAt)}`), {
     x: A4.w - M - 160,
     y: A4.h - 78,
@@ -197,7 +241,8 @@ export async function renderReportPdf(data: ReportData, assets: ReportAssets): P
 
   // Timing and location evidence
   let travelled = 0;
-  for (let i = 1; i < data.gps.length; i++) travelled += haversineMeters(data.gps[i - 1]!, data.gps[i]!);
+  for (let i = 1; i < data.gps.length; i++)
+    travelled += haversineMeters(data.gps[i - 1]!, data.gps[i]!);
   L.heading('On-site evidence');
   L.keyValues([
     ['Started', fmtDate(data.startedAt)],
@@ -210,17 +255,25 @@ export async function renderReportPdf(data: ReportData, assets: ReportAssets): P
         ? 'Not recorded'
         : `${formatDistance(data.startDistanceM)}${data.startDistanceM > 200 ? ' (outside 200 m geofence)' : ' (within geofence)'}`,
     ],
-    ['GPS trail', data.gps.length ? `${data.gps.length} points, ${formatDistance(travelled)} covered` : 'None'],
+    [
+      'GPS trail',
+      data.gps.length ? `${data.gps.length} points, ${formatDistance(travelled)} covered` : 'None',
+    ],
   ]);
 
   // Checklist
   L.heading('Checklist');
-  const fails = flattenItems(data.template).filter(({ item }) => data.answers.get(item.key)?.value === 'fail');
+  const fails = flattenItems(data.template).filter(
+    ({ item }) => data.answers.get(item.key)?.value === 'fail',
+  );
   if (fails.length) {
-    L.text(`${fails.length} item${fails.length === 1 ? '' : 's'} failed: ${fails.map((f) => f.item.label).join(', ')}`, {
-      color: FAIL,
-      bold: true,
-    });
+    L.text(
+      `${fails.length} item${fails.length === 1 ? '' : 's'} failed: ${fails.map((f) => f.item.label).join(', ')}`,
+      {
+        color: FAIL,
+        bold: true,
+      },
+    );
     L.y -= 4;
   }
   const labelW = 250;
@@ -235,21 +288,39 @@ export async function renderReportPdf(data: ReportData, assets: ReportAssets): P
       const labelLines = wrap(item.label, font, 9.5, labelW);
       const valueLines = wrap(value, bold, 9.5, valueW);
       const noteLines = a?.note ? wrap(a.note, font, 8.5, valueW) : [];
-      const h = Math.max(labelLines.length * 12, valueLines.length * 12 + noteLines.length * 11) + 6;
+      const h =
+        Math.max(labelLines.length * 12, valueLines.length * 12 + noteLines.length * 11) + 6;
       L.ensure(h);
       labelLines.forEach((line, n) =>
         L.page.drawText(line, { x: M, y: L.y - 10 - n * 12, size: 9.5, font, color: INK }),
       );
       const color = a?.value === 'pass' ? PASS : a?.value === 'fail' ? FAIL : INK;
       valueLines.forEach((line, n) =>
-        L.page.drawText(line, { x: M + labelW + 12, y: L.y - 10 - n * 12, size: 9.5, font: bold, color }),
+        L.page.drawText(line, {
+          x: M + labelW + 12,
+          y: L.y - 10 - n * 12,
+          size: 9.5,
+          font: bold,
+          color,
+        }),
       );
       const noteTop = L.y - 10 - valueLines.length * 12;
       noteLines.forEach((line, n) =>
-        L.page.drawText(line, { x: M + labelW + 12, y: noteTop - n * 11, size: 8.5, font, color: MUTED }),
+        L.page.drawText(line, {
+          x: M + labelW + 12,
+          y: noteTop - n * 11,
+          size: 8.5,
+          font,
+          color: MUTED,
+        }),
       );
       L.y -= h;
-      L.page.drawLine({ start: { x: M, y: L.y + 2 }, end: { x: A4.w - M, y: L.y + 2 }, thickness: 0.5, color: LINE });
+      L.page.drawLine({
+        start: { x: M, y: L.y + 2 },
+        end: { x: A4.w - M, y: L.y + 2 },
+        thickness: 0.5,
+        color: LINE,
+      });
     }
   }
 
@@ -257,7 +328,8 @@ export async function renderReportPdf(data: ReportData, assets: ReportAssets): P
   if (data.pins.length) {
     L.heading(`Damage (${data.pins.length})`);
     const diagram = data.pins[0]!.diagram;
-    const box = diagram === 'vehicle-top' ? { w: 100, h: 182, s: 1.25 } : { w: 140, h: 100, s: 2.2 };
+    const box =
+      diagram === 'vehicle-top' ? { w: 100, h: 182, s: 1.25 } : { w: 140, h: 100, s: 2.2 };
     const dw = box.w * box.s;
     const dh = box.h * box.s;
     L.ensure(dh + 10);
@@ -271,22 +343,47 @@ export async function renderReportPdf(data: ReportData, assets: ReportAssets): P
             'M26 128 Q50 134 74 128 L78 146 Q50 154 22 146 Z',
             'M26 74 L74 74 L74 126 L26 126 Z',
           ]
-        : ['M4 4 L136 4 L136 96 L4 96 Z', 'M52 4 L52 60', 'M4 60 L136 60', 'M92 4 L92 60', 'M72 60 L72 96', 'M110 60 L110 96'];
+        : [
+            'M4 4 L136 4 L136 96 L4 96 Z',
+            'M52 4 L52 60',
+            'M4 60 L136 60',
+            'M92 4 L92 60',
+            'M72 60 L72 96',
+            'M110 60 L110 96',
+          ];
     for (const p of svgPaths) {
       L.page.drawSvgPath(p, { x: ox, y: oy, scale: box.s, borderColor: MUTED, borderWidth: 1 });
     }
     data.pins.forEach((pin, n) => {
       const cx = ox + pin.x * dw;
       const cy = oy - pin.y * dh;
-      L.page.drawCircle({ x: cx, y: cy, size: 8, color: SEVERITY[pin.severity] ?? FAIL, borderColor: INK, borderWidth: 0.5 });
+      L.page.drawCircle({
+        x: cx,
+        y: cy,
+        size: 8,
+        color: SEVERITY[pin.severity] ?? FAIL,
+        borderColor: INK,
+        borderWidth: 0.5,
+      });
       const label = String(n + 1);
-      L.page.drawText(label, { x: cx - bold.widthOfTextAtSize(label, 8) / 2, y: cy - 3, size: 8, font: bold, color: INK });
+      L.page.drawText(label, {
+        x: cx - bold.widthOfTextAtSize(label, 8) / 2,
+        y: cy - 3,
+        size: 8,
+        font: bold,
+        color: INK,
+      });
     });
     // Legend beside the diagram
     const lx = ox + dw + 24;
     let ly = oy - 4;
     data.pins.forEach((pin, n) => {
-      const lines = wrap(`${n + 1}. ${pin.severity.toUpperCase()}${pin.note ? ` - ${pin.note}` : ''}`, font, 9, A4.w - M - lx);
+      const lines = wrap(
+        `${n + 1}. ${pin.severity.toUpperCase()}${pin.note ? ` - ${pin.note}` : ''}`,
+        font,
+        9,
+        A4.w - M - lx,
+      );
       for (const line of lines) {
         L.page.drawText(line, { x: lx, y: ly - 9, size: 9, font, color: INK });
         ly -= 12;
@@ -319,10 +416,28 @@ export async function renderReportPdf(data: ReportData, assets: ReportAssets): P
           const k = Math.min(cellW / img.width, imgH / img.height);
           const w = img.width * k;
           const h = img.height * k;
-          L.page.drawImage(img, { x: x + (cellW - w) / 2, y: L.y - imgH + (imgH - h) / 2, width: w, height: h });
+          L.page.drawImage(img, {
+            x: x + (cellW - w) / 2,
+            y: L.y - imgH + (imgH - h) / 2,
+            width: w,
+            height: h,
+          });
         } else {
-          L.page.drawRectangle({ x, y: L.y - imgH, width: cellW, height: imgH, borderColor: LINE, borderWidth: 1 });
-          L.page.drawText('Photo not available', { x: x + 12, y: L.y - imgH / 2, size: 9, font, color: MUTED });
+          L.page.drawRectangle({
+            x,
+            y: L.y - imgH,
+            width: cellW,
+            height: imgH,
+            borderColor: LINE,
+            borderWidth: 1,
+          });
+          L.page.drawText('Photo not available', {
+            x: x + 12,
+            y: L.y - imgH / 2,
+            size: 9,
+            font,
+            color: MUTED,
+          });
         }
         const item = items.get(p.itemKey);
         const shot = item?.shots.find((s) => s.key === p.shotKey);
@@ -334,7 +449,9 @@ export async function renderReportPdf(data: ReportData, assets: ReportAssets): P
           color: INK,
         });
         L.page.drawText(
-          safe(`${fmtDate(p.takenAt)}${p.lat !== null && p.lng !== null ? ` · ${p.lat.toFixed(5)}, ${p.lng.toFixed(5)}` : ''}`),
+          safe(
+            `${fmtDate(p.takenAt)}${p.lat !== null && p.lng !== null ? ` · ${p.lat.toFixed(5)}, ${p.lng.toFixed(5)}` : ''}`,
+          ),
           { x, y: L.y - imgH - 24, size: 8, font, color: MUTED },
         );
       }
@@ -351,7 +468,12 @@ export async function renderReportPdf(data: ReportData, assets: ReportAssets): P
       try {
         const sig = await doc.embedPng(assets.signature);
         const k = Math.min(220 / sig.width, 80 / sig.height);
-        L.page.drawImage(sig, { x: M, y: L.y - sig.height * k, width: sig.width * k, height: sig.height * k });
+        L.page.drawImage(sig, {
+          x: M,
+          y: L.y - sig.height * k,
+          width: sig.width * k,
+          height: sig.height * k,
+        });
         L.y -= sig.height * k + 6;
         drawn = true;
       } catch {
@@ -374,8 +496,19 @@ export async function renderReportPdf(data: ReportData, assets: ReportAssets): P
   // Footer on every page
   L.pages.forEach((page, n) => {
     const text = safe(`${data.reference} · Page ${n + 1} of ${L.pages.length}`);
-    page.drawLine({ start: { x: M, y: 34 }, end: { x: A4.w - M, y: 34 }, thickness: 0.5, color: LINE });
-    page.drawText(text, { x: A4.w - M - font.widthOfTextAtSize(text, 8), y: 22, size: 8, font, color: MUTED });
+    page.drawLine({
+      start: { x: M, y: 34 },
+      end: { x: A4.w - M, y: 34 },
+      thickness: 0.5,
+      color: LINE,
+    });
+    page.drawText(text, {
+      x: A4.w - M - font.widthOfTextAtSize(text, 8),
+      y: 22,
+      size: 8,
+      font,
+      color: MUTED,
+    });
     page.drawText('Field Inspections', { x: M, y: 22, size: 8, font, color: MUTED });
   });
 

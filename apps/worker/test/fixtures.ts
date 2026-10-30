@@ -18,7 +18,10 @@ import { VEHICLE_TEMPLATE, flattenItems, s3Keys } from '@fim/shared';
 import { sql } from 'drizzle-orm';
 import type { BlobStore } from '../src/storage.js';
 
-const FIXTURES = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../scripts/fixtures');
+const FIXTURES = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  '../../../scripts/fixtures',
+);
 export const fixture = (name: string) => new Uint8Array(readFileSync(path.join(FIXTURES, name)));
 
 export async function reset(db: Db) {
@@ -32,11 +35,21 @@ export async function seedSubmitted(db: Db, blobs: BlobStore, opts: { uploaded?:
   const uploaded = opts.uploaded ?? true;
   const [assessor] = await db
     .insert(users)
-    .values({ email: `a-${randomUUID()}@x.co.za`, name: 'Thandi Nkosi', role: 'assessor', passwordHash: 'x' })
+    .values({
+      email: `a-${randomUUID()}@x.co.za`,
+      name: 'Thandi Nkosi',
+      role: 'assessor',
+      passwordHash: 'x',
+    })
     .returning();
   const [manager] = await db
     .insert(users)
-    .values({ email: `m-${randomUUID()}@x.co.za`, name: 'Ayesha Moodley', role: 'manager', passwordHash: 'x' })
+    .values({
+      email: `m-${randomUUID()}@x.co.za`,
+      name: 'Ayesha Moodley',
+      role: 'manager',
+      passwordHash: 'x',
+    })
     .returning();
   const [template] = await db
     .insert(templates)
@@ -55,8 +68,19 @@ export async function seedSubmitted(db: Db, blobs: BlobStore, opts: { uploaded?:
       insuredName: 'Sipho Dlamini',
       insuredPhone: '0821234567',
       sumInsuredCents: 38_500_000,
-      subject: { kind: 'vehicle', make: 'Toyota', model: 'Hilux 2.4 GD-6', year: 2021, registration: 'JHB 123 GP' },
-      address: { line1: '100 Rivonia Road', suburb: 'Sandton', city: 'Johannesburg', postalCode: '2196' },
+      subject: {
+        kind: 'vehicle',
+        make: 'Toyota',
+        model: 'Hilux 2.4 GD-6',
+        year: 2021,
+        registration: 'JHB 123 GP',
+      },
+      address: {
+        line1: '100 Rivonia Road',
+        suburb: 'Sandton',
+        city: 'Johannesburg',
+        postalCode: '2196',
+      },
       lat: -26.1066,
       lng: 28.0567,
       dueAt: new Date('2026-10-30T12:00:00Z'),
@@ -89,7 +113,10 @@ export async function seedSubmitted(db: Db, blobs: BlobStore, opts: { uploaded?:
               : item.kind === 'select'
                 ? item.options[0]!.value
                 : 'Dent on the left rear door; otherwise in good condition.',
-      note: item.key === 'exterior_overview' ? 'Dent and scratches on the left rear door, consistent with the claim.' : null,
+      note:
+        item.key === 'exterior_overview'
+          ? 'Dent and scratches on the left rear door, consistent with the claim.'
+          : null,
     })),
   );
 
@@ -132,17 +159,57 @@ export async function seedSubmitted(db: Db, blobs: BlobStore, opts: { uploaded?:
     uploadedAt: uploaded ? new Date() : null,
   });
   await db.insert(damagePins).values([
-    { id: randomUUID(), inspectionId: id, diagram: 'vehicle-top', x: 0.12, y: 0.68, severity: 'moderate', note: 'Dent, left rear door' },
-    { id: randomUUID(), inspectionId: id, diagram: 'vehicle-top', x: 0.5, y: 0.05, severity: 'minor', note: 'Stone chip on bonnet' },
+    {
+      id: randomUUID(),
+      inspectionId: id,
+      diagram: 'vehicle-top',
+      x: 0.12,
+      y: 0.68,
+      severity: 'moderate',
+      note: 'Dent, left rear door',
+    },
+    {
+      id: randomUUID(),
+      inspectionId: id,
+      diagram: 'vehicle-top',
+      x: 0.5,
+      y: 0.05,
+      severity: 'minor',
+      note: 'Stone chip on bonnet',
+    },
   ]);
   await db.insert(gpsPoints).values([
-    { inspectionId: id, lat: -26.1063, lng: 28.0565, accuracy: 8, recordedAt: new Date('2026-10-30T08:05:00Z') },
-    { inspectionId: id, lat: -26.1066, lng: 28.0568, accuracy: 6, recordedAt: new Date('2026-10-30T08:30:00Z') },
+    {
+      inspectionId: id,
+      lat: -26.1063,
+      lng: 28.0565,
+      accuracy: 8,
+      recordedAt: new Date('2026-10-30T08:05:00Z'),
+    },
+    {
+      inspectionId: id,
+      lat: -26.1066,
+      lng: 28.0568,
+      accuracy: 6,
+      recordedAt: new Date('2026-10-30T08:30:00Z'),
+    },
   ]);
   await db.insert(reviewEvents).values([
     { inspectionId: id, kind: 'created', actorId: manager!.id, toStatus: 'assigned' },
-    { inspectionId: id, kind: 'started', actorId: assessor!.id, fromStatus: 'assigned', toStatus: 'in_progress' },
-    { inspectionId: id, kind: 'submitted', actorId: assessor!.id, fromStatus: 'in_progress', toStatus: 'submitted' },
+    {
+      inspectionId: id,
+      kind: 'started',
+      actorId: assessor!.id,
+      fromStatus: 'assigned',
+      toStatus: 'in_progress',
+    },
+    {
+      inspectionId: id,
+      kind: 'submitted',
+      actorId: assessor!.id,
+      fromStatus: 'in_progress',
+      toStatus: 'submitted',
+    },
   ]);
   return { id, assessorId: assessor!.id };
 }

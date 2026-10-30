@@ -1,4 +1,9 @@
-import { DeleteMessageCommand, ReceiveMessageCommand, SQSClient, type Message } from '@aws-sdk/client-sqs';
+import {
+  DeleteMessageCommand,
+  ReceiveMessageCommand,
+  SQSClient,
+  type Message,
+} from '@aws-sdk/client-sqs';
 import { jobSchema, type Job } from '@fim/shared';
 import type { Logger } from 'pino';
 
@@ -22,11 +27,15 @@ export class QueueConsumer {
       waitSeconds?: number;
     },
   ) {
-    this.sqs = new SQSClient({ region: opts.region, ...(opts.endpoint ? { endpoint: opts.endpoint } : {}) });
+    this.sqs = new SQSClient({
+      region: opts.region,
+      ...(opts.endpoint ? { endpoint: opts.endpoint } : {}),
+    });
   }
 
   async processMessage(msg: Message): Promise<boolean> {
-    const correlationId = msg.MessageAttributes?.correlationId?.StringValue ?? msg.MessageId ?? 'unknown';
+    const correlationId =
+      msg.MessageAttributes?.correlationId?.StringValue ?? msg.MessageId ?? 'unknown';
     const log = this.opts.log.child({ correlationId, messageId: msg.MessageId });
     let job: Job;
     try {
@@ -39,7 +48,12 @@ export class QueueConsumer {
     const started = Date.now();
     try {
       await this.opts.handler(job, log.child({ jobType: job.type }));
-      await this.sqs.send(new DeleteMessageCommand({ QueueUrl: this.opts.queueUrl, ReceiptHandle: msg.ReceiptHandle }));
+      await this.sqs.send(
+        new DeleteMessageCommand({
+          QueueUrl: this.opts.queueUrl,
+          ReceiptHandle: msg.ReceiptHandle,
+        }),
+      );
       log.info({ jobType: job.type, ms: Date.now() - started }, 'job done');
       return true;
     } catch (err) {

@@ -73,12 +73,8 @@
           "name": "damage_pins_inspection_id_inspections_id_fk",
           "tableFrom": "damage_pins",
           "tableTo": "inspections",
-          "columnsFrom": [
-            "inspection_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["inspection_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -148,12 +144,8 @@
           "name": "devices_user_id_users_id_fk",
           "tableFrom": "devices",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -163,9 +155,7 @@
         "devices_expo_push_token_unique": {
           "name": "devices_expo_push_token_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "expo_push_token"
-          ]
+          "columns": ["expo_push_token"]
         }
       },
       "policies": {},
@@ -241,12 +231,8 @@
           "name": "gps_points_inspection_id_inspections_id_fk",
           "tableFrom": "gps_points",
           "tableTo": "inspections",
-          "columnsFrom": [
-            "inspection_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["inspection_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -311,12 +297,8 @@
           "name": "idempotency_keys_user_id_users_id_fk",
           "tableFrom": "idempotency_keys",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -324,10 +306,7 @@
       "compositePrimaryKeys": {
         "idempotency_keys_user_id_key_pk": {
           "name": "idempotency_keys_user_id_key_pk",
-          "columns": [
-            "user_id",
-            "key"
-          ]
+          "columns": ["user_id", "key"]
         }
       },
       "uniqueConstraints": {},
@@ -399,12 +378,8 @@
           "name": "inspection_answers_inspection_id_inspections_id_fk",
           "tableFrom": "inspection_answers",
           "tableTo": "inspections",
-          "columnsFrom": [
-            "inspection_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["inspection_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -515,12 +490,8 @@
           "name": "inspection_photos_inspection_id_inspections_id_fk",
           "tableFrom": "inspection_photos",
           "tableTo": "inspections",
-          "columnsFrom": [
-            "inspection_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["inspection_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -799,12 +770,8 @@
           "name": "inspections_template_id_templates_id_fk",
           "tableFrom": "inspections",
           "tableTo": "templates",
-          "columnsFrom": [
-            "template_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["template_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -812,12 +779,8 @@
           "name": "inspections_assignee_id_users_id_fk",
           "tableFrom": "inspections",
           "tableTo": "users",
-          "columnsFrom": [
-            "assignee_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["assignee_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -827,9 +790,7 @@
         "inspections_reference_unique": {
           "name": "inspections_reference_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "reference"
-          ]
+          "columns": ["reference"]
         }
       },
       "policies": {},
@@ -952,12 +913,8 @@
           "name": "refresh_tokens_user_id_users_id_fk",
           "tableFrom": "refresh_tokens",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -967,9 +924,7 @@
         "refresh_tokens_token_hash_unique": {
           "name": "refresh_tokens_token_hash_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "token_hash"
-          ]
+          "columns": ["token_hash"]
         }
       },
       "policies": {},
@@ -1019,12 +974,8 @@
           "name": "reports_inspection_id_inspections_id_fk",
           "tableFrom": "reports",
           "tableTo": "inspections",
-          "columnsFrom": [
-            "inspection_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["inspection_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1034,9 +985,7 @@
         "reports_inspection_id_unique": {
           "name": "reports_inspection_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "inspection_id"
-          ]
+          "columns": ["inspection_id"]
         }
       },
       "policies": {},
@@ -1159,12 +1108,8 @@
           "name": "review_events_inspection_id_inspections_id_fk",
           "tableFrom": "review_events",
           "tableTo": "inspections",
-          "columnsFrom": [
-            "inspection_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["inspection_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1172,12 +1117,8 @@
           "name": "review_events_from_assignee_id_users_id_fk",
           "tableFrom": "review_events",
           "tableTo": "users",
-          "columnsFrom": [
-            "from_assignee_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["from_assignee_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -1185,12 +1126,8 @@
           "name": "review_events_to_assignee_id_users_id_fk",
           "tableFrom": "review_events",
           "tableTo": "users",
-          "columnsFrom": [
-            "to_assignee_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["to_assignee_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -1198,12 +1135,8 @@
           "name": "review_events_actor_id_users_id_fk",
           "tableFrom": "review_events",
           "tableTo": "users",
-          "columnsFrom": [
-            "actor_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["actor_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1273,12 +1206,8 @@
           "name": "signatures_inspection_id_inspections_id_fk",
           "tableFrom": "signatures",
           "tableTo": "inspections",
-          "columnsFrom": [
-            "inspection_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["inspection_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1288,9 +1217,7 @@
         "signatures_inspection_id_unique": {
           "name": "signatures_inspection_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "inspection_id"
-          ]
+          "columns": ["inspection_id"]
         }
       },
       "policies": {},
@@ -1420,9 +1347,7 @@
         "users_email_unique": {
           "name": "users_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         }
       },
       "policies": {},

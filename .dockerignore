@@ -1,0 +1,9 @@
+**/node_modules
+**/dist
+**/coverage
+**/.expo
+infra/cdk.out
+apps/mobile
+.git
+.env
+docs

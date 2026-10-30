@@ -56,7 +56,11 @@ export async function handlePush(
 
   // Tokens for uninstalled apps are dead; forget them so we stop sending.
   const dead = tickets
-    .map((t, i) => (t.status === 'error' && t.details?.error === 'DeviceNotRegistered' ? rows[i]?.expoPushToken : null))
+    .map((t, i) =>
+      t.status === 'error' && t.details?.error === 'DeviceNotRegistered'
+        ? rows[i]?.expoPushToken
+        : null,
+    )
     .filter((t): t is string => !!t);
   if (dead.length) await db.delete(devices).where(inArray(devices.expoPushToken, dead));
   const sent = tickets.filter((t) => t.status === 'ok').length;

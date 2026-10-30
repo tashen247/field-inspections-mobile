@@ -47,11 +47,25 @@ export interface ReportData {
   templateVersion: number;
   template: TemplateBody;
   answers: Map<string, { value: AnswerValue | null; note: string | null }>;
-  photos: { id: string; itemKey: string; shotKey: string | null; s3Key: string; takenAt: Date; lat: number | null; lng: number | null; uploaded: boolean }[];
+  photos: {
+    id: string;
+    itemKey: string;
+    shotKey: string | null;
+    s3Key: string;
+    takenAt: Date;
+    lat: number | null;
+    lng: number | null;
+    uploaded: boolean;
+  }[];
   pins: { diagram: Diagram; x: number; y: number; severity: Severity; note: string | null }[];
   signature: { s3Key: string; signedName: string; signedAt: Date; uploaded: boolean } | null;
   gps: { lat: number; lng: number; recordedAt: Date }[];
-  events: { kind: AuditEventKind; comment: string | null; actorName: string | null; createdAt: Date }[];
+  events: {
+    kind: AuditEventKind;
+    comment: string | null;
+    actorName: string | null;
+    createdAt: Date;
+  }[];
 }
 
 export async function loadReportData(db: DbOrTx, id: string): Promise<ReportData | null> {
@@ -73,7 +87,11 @@ export async function loadReportData(db: DbOrTx, id: string): Promise<ReportData
       .orderBy(asc(inspectionPhotos.takenAt)),
     db.select().from(damagePins).where(eq(damagePins.inspectionId, id)),
     db.select().from(signatures).where(eq(signatures.inspectionId, id)),
-    db.select().from(gpsPoints).where(eq(gpsPoints.inspectionId, id)).orderBy(asc(gpsPoints.recordedAt)),
+    db
+      .select()
+      .from(gpsPoints)
+      .where(eq(gpsPoints.inspectionId, id))
+      .orderBy(asc(gpsPoints.recordedAt)),
     db
       .select({ e: reviewEvents, actorName: users.name })
       .from(reviewEvents)
@@ -114,7 +132,13 @@ export async function loadReportData(db: DbOrTx, id: string): Promise<ReportData
       lng: p.lng,
       uploaded: p.uploadedAt !== null,
     })),
-    pins: pins.map((p) => ({ diagram: p.diagram, x: p.x, y: p.y, severity: p.severity, note: p.note })),
+    pins: pins.map((p) => ({
+      diagram: p.diagram,
+      x: p.x,
+      y: p.y,
+      severity: p.severity,
+      note: p.note,
+    })),
     signature: sig[0]
       ? {
           s3Key: sig[0].s3Key,

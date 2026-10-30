@@ -108,8 +108,8 @@ export default function Jobs() {
               value={view}
               onChange={setView}
               options={[
-                { value: 'list', label: '', icon: 'list' },
-                { value: 'map', label: '', icon: 'map' },
+                { value: 'list', label: '', icon: 'list', a11yLabel: 'List view' },
+                { value: 'map', label: '', icon: 'map', a11yLabel: 'Map view' },
               ]}
             />
           </View>

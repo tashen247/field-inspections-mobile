@@ -6,7 +6,8 @@ import { renderReportPdf } from '../pdf/report.js';
 import { loadReportData } from '../report-data.js';
 import type { BlobStore } from '../storage.js';
 
-export type ReportOutcome = 'generated' | 'skipped_current' | 'skipped_missing' | 'waiting_for_uploads';
+export type ReportOutcome =
+  'generated' | 'skipped_current' | 'skipped_missing' | 'waiting_for_uploads';
 
 /**
  * Renders and stores the PDF for the inspection's current version. Safe to run twice: a report
@@ -60,6 +61,9 @@ export async function handleGenerateReport(
       comment: `Report for version ${data.version} (${Math.round(pdf.length / 1024)} KB)`,
     });
   });
-  log.info({ inspectionId: data.id, version: data.version, bytes: pdf.length, key }, 'report generated');
+  log.info(
+    { inspectionId: data.id, version: data.version, bytes: pdf.length, key },
+    'report generated',
+  );
   return 'generated';
 }

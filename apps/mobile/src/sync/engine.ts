@@ -123,7 +123,9 @@ export class SyncEngine {
       upsertTemplates(db, items);
       const names = new Set(
         items.flatMap((t) =>
-          t.schema.sections.flatMap((s) => s.items.flatMap((i) => i.shots.map((sh) => sh.reference))),
+          t.schema.sections.flatMap((s) =>
+            s.items.flatMap((i) => i.shots.map((sh) => sh.reference)),
+          ),
         ),
       );
       names.delete(undefined);

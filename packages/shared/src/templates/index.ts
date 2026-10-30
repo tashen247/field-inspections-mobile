@@ -21,7 +21,7 @@ export const VEHICLE_TEMPLATE: TemplateBody = templateBodySchema.parse({
           shots: [
             {
               key: 'vin_plate',
- reference: 'vin_plate',
+              reference: 'vin_plate',
               label: 'VIN plate',
               required: true,
               hint: 'Usually on the windscreen or B-pillar',
@@ -37,16 +37,23 @@ export const VEHICLE_TEMPLATE: TemplateBody = templateBodySchema.parse({
           max: 2_000_000,
           integer: true,
           required: true,
-          shots: [{ key: 'odometer',
- reference: 'odometer', label: 'Odometer display', required: true }],
+          shots: [
+            { key: 'odometer', reference: 'odometer', label: 'Odometer display', required: true },
+          ],
         },
         {
           key: 'licence_disc_valid',
           kind: 'passFail',
           label: 'Licence disc valid',
           required: true,
-          shots: [{ key: 'licence_disc',
- reference: 'licence_disc', label: 'Licence disc', required: false }],
+          shots: [
+            {
+              key: 'licence_disc',
+              reference: 'licence_disc',
+              label: 'Licence disc',
+              required: false,
+            },
+          ],
         },
       ],
     },
@@ -61,14 +68,10 @@ export const VEHICLE_TEMPLATE: TemplateBody = templateBodySchema.parse({
           required: true,
           noteOnFail: true,
           shots: [
-            { key: 'front_left',
- reference: 'front_left', label: 'Front-left', required: true },
-            { key: 'front_right',
- reference: 'front_right', label: 'Front-right', required: true },
-            { key: 'rear_left',
- reference: 'rear_left', label: 'Rear-left', required: true },
-            { key: 'rear_right',
- reference: 'rear_right', label: 'Rear-right', required: true },
+            { key: 'front_left', reference: 'front_left', label: 'Front-left', required: true },
+            { key: 'front_right', reference: 'front_right', label: 'Front-right', required: true },
+            { key: 'rear_left', reference: 'rear_left', label: 'Rear-left', required: true },
+            { key: 'rear_right', reference: 'rear_right', label: 'Rear-right', required: true },
           ],
         },
         {
@@ -211,8 +214,14 @@ export const PROPERTY_TEMPLATE: TemplateBody = templateBodySchema.parse({
           label: 'Street address confirmed on site',
           required: true,
           allowNa: false,
-          shots: [{ key: 'street_view',
- reference: 'street_view', label: 'Street view with house number', required: true }],
+          shots: [
+            {
+              key: 'street_view',
+              reference: 'street_view',
+              label: 'Street view with house number',
+              required: true,
+            },
+          ],
         },
         {
           key: 'security',
@@ -244,8 +253,7 @@ export const PROPERTY_TEMPLATE: TemplateBody = templateBodySchema.parse({
           label: 'Roof free of leaks and damage',
           required: true,
           noteOnFail: true,
-          shots: [{ key: 'roof',
- reference: 'roof', label: 'Roof', required: true }],
+          shots: [{ key: 'roof', reference: 'roof', label: 'Roof', required: true }],
         },
         {
           key: 'roof_type',
@@ -294,8 +302,7 @@ export const PROPERTY_TEMPLATE: TemplateBody = templateBodySchema.parse({
           kind: 'passFail',
           label: 'Geyser has drip tray',
           required: true,
-          shots: [{ key: 'geyser',
- reference: 'geyser', label: 'Geyser', required: false }],
+          shots: [{ key: 'geyser', reference: 'geyser', label: 'Geyser', required: false }],
         },
         {
           key: 'solar',

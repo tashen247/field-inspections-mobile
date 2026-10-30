@@ -399,3 +399,11 @@ export async function resetDatabase(db: Db) {
     signatures, inspection_photos, inspection_answers, inspections, templates, refresh_tokens, users
     restart identity cascade`);
 }
+
+/** Seeds demo data only when the database has no users yet. Returns true if it seeded. */
+export async function seedIfEmpty(db: Db): Promise<boolean> {
+  const [row] = await db.select({ n: sql<number>`count(*)::int` }).from(users);
+  if ((row?.n ?? 0) > 0) return false;
+  await seedInspections(db, { count: 24 });
+  return true;
+}

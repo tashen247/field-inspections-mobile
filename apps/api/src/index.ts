@@ -15,6 +15,12 @@ if (process.env.MIGRATE_ON_START !== 'false') {
 }
 
 const database = createDatabase(config.DATABASE_URL);
+
+// First run of `pnpm dev`: load the demo users, templates and jobs so the app has something to show.
+if (config.NODE_ENV === 'development' && process.env.SEED_IF_EMPTY !== 'false') {
+  const { seedIfEmpty } = await import('./db/seed-data.js');
+  if (await seedIfEmpty(database.db)) logger.info('seeded demo data (see README for logins)');
+}
 const storage = createS3Storage({
   region: config.AWS_REGION,
   bucket: config.S3_BUCKET,

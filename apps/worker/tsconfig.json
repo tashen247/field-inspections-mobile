@@ -3,14 +3,8 @@
   "compilerOptions": {
     "rootDir": ".",
     "outDir": "dist",
-    "types": [
-      "node"
-    ],
+    "types": ["node"],
     "declaration": false
   },
-  "include": [
-    "src",
-    "test",
-    "vitest.config.ts"
-  ]
+  "include": ["src", "test", "vitest.config.ts"]
 }

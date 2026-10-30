@@ -11,7 +11,11 @@ export default async function setup() {
   if (exists.rowCount === 0) await admin.query('create database fim_worker_test');
   await admin.end();
   await runMigrations(env.DATABASE_URL);
-  const s3 = new S3Client({ region: env.AWS_REGION, endpoint: env.AWS_ENDPOINT_URL, forcePathStyle: true });
+  const s3 = new S3Client({
+    region: env.AWS_REGION,
+    endpoint: env.AWS_ENDPOINT_URL,
+    forcePathStyle: true,
+  });
   try {
     await s3.send(new CreateBucketCommand({ Bucket: env.S3_BUCKET }));
   } catch (err) {

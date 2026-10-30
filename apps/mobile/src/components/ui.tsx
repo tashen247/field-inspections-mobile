@@ -315,7 +315,7 @@ export function Segmented<T extends string>({
   accessibilityLabel,
 }: {
   value: T;
-  options: { value: T; label: string; icon?: IconName; color?: string }[];
+  options: { value: T; label: string; icon?: IconName; color?: string; a11yLabel?: string }[];
   onChange: (v: T) => void;
   accessibilityLabel?: string;
 }) {
@@ -340,7 +340,7 @@ export function Segmented<T extends string>({
             key={o.value}
             accessibilityRole="radio"
             accessibilityState={{ selected: active }}
-            accessibilityLabel={o.label}
+            accessibilityLabel={o.a11yLabel ?? o.label}
             onPress={() => {
               void Haptics.selectionAsync();
               onChange(o.value);

@@ -9,6 +9,8 @@ import {
   formatZar,
   haversineMeters,
   partCount,
+  s3Keys,
+  jobSchema,
   reviewBodySchema,
   submissionBodySchema,
   templateBodySchema,
@@ -244,5 +246,22 @@ describe('request schemas', () => {
       gpsTrail: [],
     });
     expect(parsed.answers[0]?.note).toBeNull();
+  });
+});
+
+describe('jobs and storage keys', () => {
+  it('lays out S3 keys per inspection and validates queue messages', () => {
+    expect(s3Keys.photo('i', 'p')).toBe('inspections/i/photos/p.jpg');
+    expect(s3Keys.signature('i', 's')).toBe('inspections/i/signature/s.png');
+    expect(s3Keys.report('i', 3)).toBe('inspections/i/reports/report-v3.pdf');
+    const push = jobSchema.parse({
+      type: 'push',
+      userId: '00000000-0000-4000-8000-000000000000',
+      title: 't',
+      body: 'b',
+      correlationId: 'c',
+    });
+    expect(push).toMatchObject({ data: {} });
+    expect(jobSchema.safeParse({ type: 'nope' }).success).toBe(false);
   });
 });

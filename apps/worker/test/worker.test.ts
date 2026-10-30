@@ -1,4 +1,10 @@
-import { CreateQueueCommand, DeleteQueueCommand, GetQueueAttributesCommand, SendMessageCommand, SQSClient } from '@aws-sdk/client-sqs';
+import {
+  CreateQueueCommand,
+  DeleteQueueCommand,
+  GetQueueAttributesCommand,
+  SendMessageCommand,
+  SQSClient,
+} from '@aws-sdk/client-sqs';
 import { createDatabase, devices, inspections, reports, type Database } from '@fim/db';
 import { eq } from 'drizzle-orm';
 import { PDFDocument, StandardFonts } from 'pdf-lib';
@@ -20,7 +26,11 @@ let blobs: BlobStore;
 beforeAll(() => {
   const env = testEnv();
   database = createDatabase(env.DATABASE_URL, 3);
-  blobs = createS3BlobStore({ region: env.AWS_REGION, bucket: env.S3_BUCKET, endpoint: env.AWS_ENDPOINT_URL });
+  blobs = createS3BlobStore({
+    region: env.AWS_REGION,
+    bucket: env.S3_BUCKET,
+    endpoint: env.AWS_ENDPOINT_URL,
+  });
 });
 afterAll(() => database.close());
 beforeEach(() => reset(database.db));
@@ -34,8 +44,13 @@ describe('PDF report', () => {
     );
     expect(outcome).toBe('generated');
 
-    const report = await database.db.query.reports.findFirst({ where: eq(reports.inspectionId, id) });
-    expect(report).toMatchObject({ inspectionVersion: 2, s3Key: `inspections/${id}/reports/report-v2.pdf` });
+    const report = await database.db.query.reports.findFirst({
+      where: eq(reports.inspectionId, id),
+    });
+    expect(report).toMatchObject({
+      inspectionVersion: 2,
+      s3Key: `inspections/${id}/reports/report-v2.pdf`,
+    });
     const bytes = await blobs.get(report!.s3Key);
     expect(bytes).not.toBeNull();
     const pdf = await PDFDocument.load(bytes!);
@@ -52,20 +67,28 @@ describe('PDF report', () => {
     expect(await handleGenerateReport(deps, job)).toBe('skipped_current');
 
     // Approval bumps the version, so the report is regenerated.
-    await database.db.update(inspections).set({ status: 'approved', version: 3 }).where(eq(inspections.id, id));
+    await database.db
+      .update(inspections)
+      .set({ status: 'approved', version: 3 })
+      .where(eq(inspections.id, id));
     expect(await handleGenerateReport(deps, job)).toBe('generated');
 
     expect(
-      await handleGenerateReport(deps, { ...job, inspectionId: '00000000-0000-4000-8000-000000000000' }),
+      await handleGenerateReport(deps, {
+        ...job,
+        inspectionId: '00000000-0000-4000-8000-000000000000',
+      }),
     ).toBe('skipped_missing');
 
     const pending = await seedSubmitted(database.db, blobs, { uploaded: false });
-    expect(await handleGenerateReport(deps, { ...job, inspectionId: pending.id })).toBe('waiting_for_uploads');
+    expect(await handleGenerateReport(deps, { ...job, inspectionId: pending.id })).toBe(
+      'waiting_for_uploads',
+    );
   });
 
   it('keeps text drawable with the standard fonts', async () => {
     expect(safe('Floor area m² → 120 ± 2 °C · “ok”')).toBe('Floor area m² -> 120 ± 2 °C · “ok”');
-    expect(safe('emoji 🚗 and ✓')).toBe('emoji ?? and ?');
+    expect(safe('emoji 🚗 and ✓')).toBe('emoji ? and ?');
     const doc = await PDFDocument.create();
     const font = await doc.embedFont(StandardFonts.Helvetica);
     const lines = wrap('one two three four five six seven eight nine ten', font, 10, 60);
@@ -88,7 +111,14 @@ describe('push notifications', () => {
     );
     const res = await handlePush(
       { db: database.db, log, fetch: fetchMock as unknown as typeof fetch, accessToken: 'tok' },
-      { type: 'push', userId: assessorId, title: 'New inspection assigned', body: 'INS-1', data: { inspectionId: 'x' }, correlationId: 'c' },
+      {
+        type: 'push',
+        userId: assessorId,
+        title: 'New inspection assigned',
+        body: 'INS-1',
+        data: { inspectionId: 'x' },
+        correlationId: 'c',
+      },
     );
     expect(res).toEqual({ sent: 1, removed: 1 });
     const [, init] = fetchMock.mock.calls[0] as unknown as [string, RequestInit];
@@ -100,12 +130,26 @@ describe('push notifications', () => {
 
   it('handles no devices, dry runs and service errors', async () => {
     const { assessorId } = await seedSubmitted(database.db, blobs);
-    const job = { type: 'push' as const, userId: assessorId, title: 't', body: 'b', data: {}, correlationId: 'c' };
+    const job = {
+      type: 'push' as const,
+      userId: assessorId,
+      title: 't',
+      body: 'b',
+      data: {},
+      correlationId: 'c',
+    };
     expect(await handlePush({ db: database.db, log }, job)).toEqual({ sent: 0, removed: 0 });
-    await database.db.insert(devices).values({ userId: assessorId, expoPushToken: 'ExponentPushToken[a]', platform: 'ios' });
-    expect(await handlePush({ db: database.db, log, dryRun: true }, job)).toEqual({ sent: 1, removed: 0 });
+    await database.db
+      .insert(devices)
+      .values({ userId: assessorId, expoPushToken: 'ExponentPushToken[a]', platform: 'ios' });
+    expect(await handlePush({ db: database.db, log, dryRun: true }, job)).toEqual({
+      sent: 1,
+      removed: 0,
+    });
     const failing = vi.fn(async () => new Response('nope', { status: 503 }));
-    await expect(handlePush({ db: database.db, log, fetch: failing as unknown as typeof fetch }, job)).rejects.toThrow(/503/);
+    await expect(
+      handlePush({ db: database.db, log, fetch: failing as unknown as typeof fetch }, job),
+    ).rejects.toThrow(/503/);
   });
 });
 
@@ -114,7 +158,10 @@ describe('queue consumer', () => {
     const env = testEnv();
     const sqs = new SQSClient({ region: env.AWS_REGION, endpoint: env.AWS_ENDPOINT_URL });
     const { QueueUrl } = await sqs.send(
-      new CreateQueueCommand({ QueueName: `fim-worker-${Date.now()}`, Attributes: { VisibilityTimeout: '1' } }),
+      new CreateQueueCommand({
+        QueueName: `fim-worker-${Date.now()}`,
+        Attributes: { VisibilityTimeout: '1' },
+      }),
     );
     try {
       const seen: string[] = [];
@@ -133,7 +180,11 @@ describe('queue consumer', () => {
       await sqs.send(
         new SendMessageCommand({
           QueueUrl,
-          MessageBody: JSON.stringify({ type: 'generate_report', inspectionId: '00000000-0000-4000-8000-000000000001', correlationId: 'corr-1' }),
+          MessageBody: JSON.stringify({
+            type: 'generate_report',
+            inspectionId: '00000000-0000-4000-8000-000000000001',
+            correlationId: 'corr-1',
+          }),
           MessageAttributes: { correlationId: { DataType: 'String', StringValue: 'corr-1' } },
         }),
       );
@@ -152,13 +203,25 @@ describe('queue consumer', () => {
 
       await new Promise((r) => setTimeout(r, 1500));
       const attrs = await sqs.send(
-        new GetQueueAttributesCommand({ QueueUrl, AttributeNames: ['ApproximateNumberOfMessages', 'ApproximateNumberOfMessagesNotVisible'] }),
+        new GetQueueAttributesCommand({
+          QueueUrl,
+          AttributeNames: ['ApproximateNumberOfMessages', 'ApproximateNumberOfMessagesNotVisible'],
+        }),
       );
       // Only the poison message is left (it would go to the DLQ in production).
-      const left = Number(attrs.Attributes?.ApproximateNumberOfMessages ?? 0) + Number(attrs.Attributes?.ApproximateNumberOfMessagesNotVisible ?? 0);
+      const left =
+        Number(attrs.Attributes?.ApproximateNumberOfMessages ?? 0) +
+        Number(attrs.Attributes?.ApproximateNumberOfMessagesNotVisible ?? 0);
       expect(left).toBe(1);
 
-      const stopper = new QueueConsumer({ region: env.AWS_REGION, queueUrl: QueueUrl!, endpoint: env.AWS_ENDPOINT_URL, log, waitSeconds: 1, handler: async () => undefined });
+      const stopper = new QueueConsumer({
+        region: env.AWS_REGION,
+        queueUrl: QueueUrl!,
+        endpoint: env.AWS_ENDPOINT_URL,
+        log,
+        waitSeconds: 1,
+        handler: async () => undefined,
+      });
       setTimeout(() => stopper.stop(), 200);
       await stopper.run();
     } finally {

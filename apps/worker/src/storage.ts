@@ -27,7 +27,12 @@ export function createS3BlobStore(opts: {
     },
     async put(key, body, contentType) {
       await s3.send(
-        new PutObjectCommand({ Bucket: opts.bucket, Key: key, Body: body, ContentType: contentType }),
+        new PutObjectCommand({
+          Bucket: opts.bucket,
+          Key: key,
+          Body: body,
+          ContentType: contentType,
+        }),
       );
     },
   };

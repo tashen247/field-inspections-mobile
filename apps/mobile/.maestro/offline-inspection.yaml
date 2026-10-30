@@ -1,0 +1,48 @@
+# End-to-end: sign in, go offline, complete an inspection, come back online, sync.
+# Run against a dev build on an emulator:  maestro test apps/mobile/.maestro/offline-inspection.yaml
+# Screenshots land in docs/screenshots for the README.
+appId: za.co.tashtech.fieldinspections
+---
+- launchApp:
+    clearState: true
+- tapOn: 'Email'
+- inputText: 'thandi.nkosi@demo.fim.co.za'
+- tapOn: 'Password'
+- inputText: 'Inspect!2026'
+- tapOn: 'Sign in'
+- extendedWaitUntil:
+    visible: 'Today'
+    timeout: 20000
+- takeScreenshot: ../../docs/screenshots/jobs-list
+- tapOn: 'Map view'
+- takeScreenshot: ../../docs/screenshots/jobs-map
+- tapOn: 'List view'
+- setAirplaneMode: enabled
+- tapOn:
+    text: 'INS-.*'
+    index: 0
+- tapOn: 'Start inspection'
+- tapOn:
+    text: 'Start anyway'
+    optional: true
+- extendedWaitUntil:
+    visible: 'Checklist'
+    timeout: 15000
+- takeScreenshot: ../../docs/screenshots/checklist
+- back
+- tapOn: 'Damage markup'
+- tapOn:
+    point: '40%,60%'
+- takeScreenshot: ../../docs/screenshots/damage-markup
+- back
+- tapOn: 'Client signature'
+- swipe:
+    start: '20%,40%'
+    end: '80%,45%'
+- takeScreenshot: ../../docs/screenshots/signature
+- tapOn: 'Save signature'
+- stopApp
+- launchApp
+- setAirplaneMode: disabled
+- tapOn: 'Sync'
+- takeScreenshot: ../../docs/screenshots/sync-status
