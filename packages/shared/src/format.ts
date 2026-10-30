@@ -29,3 +29,15 @@ export function formatZar(cents: number): string {
   const grouped = String(rands).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
   return `${negative ? '-' : ''}R ${grouped}.${c}`;
 }
+
+const PROPERTY_TYPE_LABELS: Record<string, string> = {
+  house: 'House',
+  townhouse: 'Townhouse',
+  apartment: 'Apartment',
+  commercial: 'Commercial',
+  industrial: 'Industrial',
+};
+
+export function propertyTypeLabel(type: string): string {
+  return PROPERTY_TYPE_LABELS[type] ?? type;
+}

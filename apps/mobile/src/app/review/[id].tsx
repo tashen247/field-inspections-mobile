@@ -5,6 +5,7 @@ import {
   flattenItems,
   formatAddress,
   formatZar,
+  propertyTypeLabel,
   type InspectionDetail,
   type TemplateBody,
 } from '@fim/shared';
@@ -127,7 +128,7 @@ export default function ReviewScreen() {
         <Text variant="muted">
           {i.subject.kind === 'vehicle'
             ? `${i.subject.make} ${i.subject.model} · ${i.subject.registration}`
-            : `${i.subject.propertyType}${i.subject.erfNumber ? ` · Erf ${i.subject.erfNumber}` : ''}`}
+            : `${propertyTypeLabel(i.subject.propertyType)}${i.subject.erfNumber ? ` · Erf ${i.subject.erfNumber}` : ''}`}
         </Text>
         <Text variant="muted">{formatAddress(i.address)}</Text>
         <Text variant="caption">

@@ -3,6 +3,7 @@ import {
   INSPECTION_STATUS_LABELS,
   formatAddress,
   formatDistance,
+  propertyTypeLabel,
   type Inspection,
 } from '@fim/shared';
 import * as Haptics from 'expo-haptics';
@@ -104,7 +105,7 @@ export function JobCard({
   const subject =
     job.subject.kind === 'vehicle'
       ? `${job.subject.make} ${job.subject.model} · ${job.subject.registration}`
-      : `${job.subject.propertyType[0]!.toUpperCase()}${job.subject.propertyType.slice(1)}${job.subject.erfNumber ? ` · Erf ${job.subject.erfNumber}` : ''}`;
+      : `${propertyTypeLabel(job.subject.propertyType)}${job.subject.erfNumber ? ` · Erf ${job.subject.erfNumber}` : ''}`;
 
   return (
     <View>

@@ -5,6 +5,7 @@ import {
   formatAddress,
   formatDistance,
   formatZar,
+  propertyTypeLabel,
 } from '@fim/shared';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
@@ -173,7 +174,7 @@ export default function InspectionDetail() {
           </Text>
         ) : (
           <Text variant="muted">
-            {j.subject.propertyType}
+            {propertyTypeLabel(j.subject.propertyType)}
             {j.subject.erfNumber ? ` · Erf ${j.subject.erfNumber}` : ''}
           </Text>
         )}
