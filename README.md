@@ -156,10 +156,15 @@ API docs (OpenAPI, generated from the shared Zod schemas) are at <http://localho
 
 ### Screenshots
 
+Running on an iPhone against the local stack:
+
+| Sign in                                                                 | Today's jobs, saved for offline use                                                               | Geofence check on start                                                                                                  |
+| ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| <img src="docs/screenshots/login.png" width="240" alt="Sign-in screen"> | <img src="docs/screenshots/jobs-list.png" width="240" alt="Jobs list with distance and due time"> | <img src="docs/screenshots/geofence-check.png" width="240" alt="Warning when starting more than 200 m from the address"> |
+
 The Maestro flow in [`apps/mobile/.maestro`](apps/mobile/.maestro/offline-inspection.yaml)
-signs in, goes into airplane mode, completes an inspection, force-stops the app, comes back
-online and syncs, saving screenshots of each screen (jobs list and map, checklist, damage
-markup, signature, sync status) to `docs/screenshots/`:
+captures the rest of the journey (map, checklist, damage markup, signature and the sync screen
+in airplane mode) into `docs/screenshots/`:
 
 ```bash
 maestro test apps/mobile/.maestro/offline-inspection.yaml
