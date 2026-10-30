@@ -20,7 +20,7 @@
     "db:migrate": "pnpm --filter @fim/api run db:migrate",
     "db:seed": "pnpm --filter @fim/api run db:seed",
     "synth": "pnpm --filter @fim/infra run synth",
-    "build:libs": "pnpm -r --filter ./packages/** run build"
+    "build:libs": "pnpm -r --filter @fim/shared --filter @fim/db run build"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.0",
