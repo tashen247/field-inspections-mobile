@@ -23,6 +23,13 @@ export const INSPECTION_STATUS_LABELS: Record<InspectionStatus, string> = {
 export const prioritySchema = z.enum(['low', 'normal', 'high', 'urgent']);
 export type Priority = z.infer<typeof prioritySchema>;
 
+export const PRIORITY_LABELS: Record<Priority, string> = {
+  low: 'Low',
+  normal: 'Normal',
+  high: 'High',
+  urgent: 'Urgent',
+};
+
 export const PRIORITY_RANK: Record<Priority, number> = { urgent: 0, high: 1, normal: 2, low: 3 };
 
 export const templateTypeSchema = z.enum(['vehicle', 'property']);

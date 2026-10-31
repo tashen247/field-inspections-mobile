@@ -1,5 +1,6 @@
 import {
   INSPECTION_STATUS_LABELS,
+  PRIORITY_LABELS,
   flattenItems,
   formatAddress,
   formatDistance,
@@ -234,7 +235,7 @@ export async function renderReportPdf(data: ReportData, assets: ReportAssets): P
     [data.subject.kind === 'vehicle' ? 'Vehicle' : 'Property', subject],
     ['Insured value', data.sumInsuredCents !== null ? formatZar(data.sumInsuredCents) : '-'],
     ['Assessor', data.assessorName ?? '-'],
-    ['Priority', data.priority],
+    ['Priority', PRIORITY_LABELS[data.priority]],
     ['Address', formatAddress(data.address)],
     ['Coordinates', `${data.location.lat.toFixed(5)}, ${data.location.lng.toFixed(5)}`],
   ]);
