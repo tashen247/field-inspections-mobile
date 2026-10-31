@@ -40,7 +40,9 @@ const sendBackForm = z.object({
   comment: z.string().trim().min(3, 'Tell the assessor what to fix'),
 });
 
-function answerText(value: unknown): string {
+function answerText(value: unknown, options?: { value: string; label: string }[]): string {
+  const option = options?.find((o) => o.value === value);
+  if (option) return option.label;
   if (value === 'pass') return 'Pass';
   if (value === 'fail') return 'Fail';
   if (value === 'na') return 'N/A';
@@ -116,6 +118,12 @@ export default function ReviewScreen() {
   const canReview = i.status === 'submitted';
   const canAssign = ['assigned', 'in_progress', 'sent_back'].includes(i.status);
   const photosPending = d.photos.filter((p) => !p.uploadedAt).length;
+  const items = template ? flattenItems(template).map((x) => x.item) : [];
+  const photoLabel = (p: { itemKey: string; shotKey: string | null }) => {
+    const item = items.find((x) => x.key === p.itemKey);
+    const shot = item?.shots.find((x) => x.key === p.shotKey);
+    return shot?.label ?? item?.label ?? (p.shotKey ?? p.itemKey).replace(/_/g, ' ');
+  };
 
   return (
     <Screen scroll>
@@ -232,7 +240,7 @@ export default function ReviewScreen() {
               <Pressable
                 key={p.id}
                 accessibilityRole="imagebutton"
-                accessibilityLabel={`Photo for ${p.itemKey}${p.shotKey ? `, ${p.shotKey}` : ''}`}
+                accessibilityLabel={`Photo: ${photoLabel(p)}`}
                 onPress={() => p.url && setViewer(p.url)}
                 style={styles.thumb}
               >
@@ -247,7 +255,7 @@ export default function ReviewScreen() {
                   <Ionicons name="cloud-upload-outline" size={24} color={t.colors.textMuted} />
                 )}
                 <Text variant="caption" color="#fff" style={styles.thumbLabel} numberOfLines={1}>
-                  {(p.shotKey ?? p.itemKey).replace(/_/g, ' ')}
+                  {photoLabel(p)}
                 </Text>
               </Pressable>
             ))}
@@ -274,7 +282,7 @@ export default function ReviewScreen() {
                         style={{ fontWeight: '700' }}
                         color={fail ? t.colors.danger : undefined}
                       >
-                        {answerText(a?.value)}
+                        {answerText(a?.value, 'options' in item ? item.options : undefined)}
                         {item.kind === 'number' && item.unit && typeof a?.value === 'number'
                           ? ` ${item.unit}`
                           : ''}
@@ -286,7 +294,7 @@ export default function ReviewScreen() {
               })}
             </View>
           ))}
-          <Text variant="caption">{flattenItems(template).length} items</Text>
+          <Text variant="caption">{items.length} items</Text>
         </Card>
       ) : null}
 
