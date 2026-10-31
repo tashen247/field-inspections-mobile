@@ -51,7 +51,10 @@ export default function Jobs() {
           ? true
           : r.localState === 'conflict' ||
             (isOpen(r.data) && Date.parse(r.data.dueAt) <= endOfToday.getTime()) ||
-            r.localState === 'working',
+            r.localState === 'working' ||
+            // Submitted on this device but not uploaded yet: keep it in view until it syncs.
+            r.localState === 'queued' ||
+            r.localState === 'syncing',
       )
       .sort(
         (a, b) =>

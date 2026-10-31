@@ -1,5 +1,5 @@
 import { Canvas, Fill, Path, useCanvasRef } from '@shopify/react-native-skia';
-import { forwardRef, useImperativeHandle, useState } from 'react';
+import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { Text } from '../../components/ui';
@@ -16,7 +16,14 @@ export const SignaturePad = forwardRef<SignaturePadHandle, { onChange?: (empty: 
   function SignaturePad({ onChange }, ref) {
     const canvas = useCanvasRef();
     const [paths, setPaths] = useState<string[]>([]);
-    const [current, setCurrent] = useState<string | null>(null);
+    const [current, setCurrentState] = useState<string | null>(null);
+    // Mirrors `current` so gesture callbacks can read the live stroke without
+    // doing parent updates inside a state updater.
+    const live = useRef<string | null>(null);
+    const setCurrent = (next: string | null) => {
+      live.current = next;
+      setCurrentState(next);
+    };
 
     useImperativeHandle(ref, () => ({
       toPng() {
@@ -42,16 +49,15 @@ export const SignaturePad = forwardRef<SignaturePadHandle, { onChange?: (empty: 
         );
       })
       .onUpdate((e) => {
-        setCurrent((p) => (p ? `${p} L ${e.x.toFixed(1)} ${e.y.toFixed(1)}` : p));
+        if (live.current) setCurrent(`${live.current} L ${e.x.toFixed(1)} ${e.y.toFixed(1)}`);
       })
       .onFinalize(() => {
-        setCurrent((p) => {
-          if (p) {
-            setPaths((all) => [...all, p]);
-            onChange?.(false);
-          }
-          return null;
-        });
+        const stroke = live.current;
+        setCurrent(null);
+        if (stroke) {
+          setPaths((all) => [...all, stroke]);
+          onChange?.(false);
+        }
       });
 
     return (
