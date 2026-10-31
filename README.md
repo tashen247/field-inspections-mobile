@@ -158,9 +158,13 @@ API docs (OpenAPI, generated from the shared Zod schemas) are at <http://localho
 
 Running on an iPhone against the local stack:
 
-| Sign in                                                                 | Today's jobs, saved for offline use                                                               | Geofence check on start                                                                                                  |
-| ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| <img src="docs/screenshots/login.png" width="240" alt="Sign-in screen"> | <img src="docs/screenshots/jobs-list.png" width="240" alt="Jobs list with distance and due time"> | <img src="docs/screenshots/geofence-check.png" width="240" alt="Warning when starting more than 200 m from the address"> |
+| Sign in                                                                 | Today's jobs, saved for offline use                                                               | Job detail                                                                                                          |
+| ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| <img src="docs/screenshots/login.png" width="240" alt="Sign-in screen"> | <img src="docs/screenshots/jobs-list.png" width="240" alt="Jobs list with distance and due time"> | <img src="docs/screenshots/inspection-detail.png" width="240" alt="Job detail with map, navigate and call buttons"> |
+
+| Geofence check on start                                                                                                  | Sync status after submitting                                                                              | Generated PDF report                                                                                  |
+| ------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| <img src="docs/screenshots/geofence-check.png" width="240" alt="Warning when starting more than 200 m from the address"> | <img src="docs/screenshots/sync.png" width="240" alt="Sync screen showing photos and signature uploaded"> | <img src="docs/screenshots/pdf-report.png" width="240" alt="First page of the PDF inspection report"> |
 
 The Maestro flow in [`apps/mobile/.maestro`](apps/mobile/.maestro/offline-inspection.yaml)
 captures the rest of the journey (map, checklist, damage markup, signature and the sync screen
